@@ -1,0 +1,17 @@
+from cx_Freeze import setup,Executable
+import sys
+base=None
+
+"""include is a list with the modules you are using in your program (built in modules and modules made by you) 
+if you use anydbm you should put a database alternative like dbhash or any database module you have"""
+
+includes = ["numpy","scipy.sparse","scipy.fftpack","matplotlib.cm","matplotlib.pyplot","sys" ,"matplotlib.backends"]
+
+binincludes = ["matplotlib.backends._backend_agg.so"]
+"""script is the main script
+base Win32GUI is for windows"""
+
+exe = Executable(script="pynufft.py",base=base)
+
+#version is the program version
+setup(version="3.0",options={"build_exe":{"includes":includes}},executables = [exe])

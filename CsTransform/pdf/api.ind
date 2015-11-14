@@ -1,0 +1,34 @@
+\begin{theindex}
+
+  \item CsTransform \textit{(package)}
+    \subitem CsTransform.pynufft \textit{(module)}, \hyperpage{2--4}
+      \subsubitem CsTransform.pynufft.DFT\_point \textit{(function)}, 
+		\hyperpage{2}
+      \subsubitem CsTransform.pynufft.DFT\_slow \textit{(function)}, 
+		\hyperpage{2}
+      \subsubitem CsTransform.pynufft.histeq \textit{(function)}, 
+		\hyperpage{3}
+      \subsubitem CsTransform.pynufft.pynufft \textit{(class)}, 
+		\hyperpage{3--4}
+      \subsubitem CsTransform.pynufft.rFOV\_2D \textit{(function)}, 
+		\hyperpage{2}
+      \subsubitem CsTransform.pynufft.show\_3D \textit{(function)}, 
+		\hyperpage{2}
+      \subsubitem CsTransform.pynufft.test\_1D \textit{(function)}, 
+		\hyperpage{2}
+      \subsubitem CsTransform.pynufft.test\_2D \textit{(function)}, 
+		\hyperpage{2}
+      \subsubitem CsTransform.pynufft.test\_2D\_multiprocessing \textit{(function)}, 
+		\hyperpage{2}
+      \subsubitem CsTransform.pynufft.test\_3D \textit{(function)}, 
+		\hyperpage{2}
+      \subsubitem CsTransform.pynufft.test\_prolate \textit{(function)}, 
+		\hyperpage{2}
+      \subsubitem CsTransform.pynufft.test\_radial \textit{(function)}, 
+		\hyperpage{2}
+      \subsubitem CsTransform.pynufft.test\_SR \textit{(function)}, 
+		\hyperpage{3}
+      \subsubitem CsTransform.pynufft.test\_wavelet \textit{(function)}, 
+		\hyperpage{2}
+
+\end{theindex}

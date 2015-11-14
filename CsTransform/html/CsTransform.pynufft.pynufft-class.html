@@ -1,0 +1,884 @@
+<?xml version="1.0" encoding="ascii"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>CsTransform.pynufft.pynufft</title>
+  <link rel="stylesheet" href="epydoc.css" type="text/css" />
+  <script type="text/javascript" src="epydoc.js"></script>
+</head>
+
+<body bgcolor="white" text="black" link="blue" vlink="#204080"
+      alink="#204080">
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="CsTransform.pynufft-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+      <th class="navbar" width="100%"></th>
+  </tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="100%">
+      <span class="breadcrumbs">
+        Package&nbsp;CsTransform ::
+        <a href="CsTransform.pynufft-module.html">Module&nbsp;pynufft</a> ::
+        Class&nbsp;pynufft
+      </span>
+    </td>
+    <td>
+      <table cellpadding="0" cellspacing="0">
+        <!-- hide/show private -->
+        <tr><td align="right"><span class="options">[<a href="javascript:void(0);" class="privatelink"
+    onclick="toggle_private();">hide&nbsp;private</a>]</span></td></tr>
+        <tr><td align="right"><span class="options"
+            >[<a href="frames.html" target="_top">frames</a
+            >]&nbsp;|&nbsp;<a href="CsTransform.pynufft.pynufft-class.html"
+            target="_top">no&nbsp;frames</a>]</span></td></tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<!-- ==================== CLASS DESCRIPTION ==================== -->
+<h1 class="epydoc">Class pynufft</h1><p class="nomargin-top"><span class="codelink"><a href="CsTransform.pynufft-pysrc.html#pynufft">source&nbsp;code</a></span></p>
+<center>
+<center>  <map id="uml_class_diagram_for_cstransf" name="uml_class_diagram_for_cstransf">
+<area shape="rect" id="node0" href="CsTransform.pynufft.pynufft-class.html#__init__" title="constructor of pyNufft" alt="" coords="17,303,409,321"/>
+<area shape="rect" id="node0" href="CsTransform.pynufft.pynufft-class.html#initialize_gpu" title="CsTransform.pynufft.pynufft.initialize_gpu" alt="" coords="17,321,409,340"/>
+<area shape="rect" id="node0" href="CsTransform.pynufft.pynufft-class.html#gpu_k_deconv" title="CsTransform.pynufft.pynufft.gpu_k_deconv" alt="" coords="17,340,409,359"/>
+<area shape="rect" id="node0" href="CsTransform.pynufft.pynufft-class.html#gpu_k_modulate" title="CsTransform.pynufft.pynufft.gpu_k_modulate" alt="" coords="17,359,409,377"/>
+<area shape="rect" id="node0" href="CsTransform.pynufft.pynufft-class.html#gpu_Nd2KdWKd2Nd" title="Now transform Nd grids to Kd grids(not be reshaped)" alt="" coords="17,377,409,396"/>
+<area shape="rect" id="node0" href="CsTransform.pynufft.pynufft-class.html#gpu_forwardbackward" title="CsTransform.pynufft.pynufft.gpu_forwardbackward" alt="" coords="17,396,409,415"/>
+<area shape="rect" id="node0" href="CsTransform.pynufft.pynufft-class.html#true_forward" title="compute the exact NUFT without sparse approximation only for simulation" alt="" coords="17,415,409,433"/>
+<area shape="rect" id="node0" href="CsTransform.pynufft.pynufft-class.html#forwardbackward" title="CsTransform.pynufft.pynufft.forwardbackward" alt="" coords="17,433,409,452"/>
+<area shape="rect" id="node0" href="CsTransform.pynufft.pynufft-class.html#pseudoinverse2" title="density compensation" alt="" coords="17,452,409,471"/>
+<area shape="rect" id="node0" href="CsTransform.pynufft.pynufft-class.html#pseudoinverse3" title="CsTransform.pynufft.pynufft.pseudoinverse3" alt="" coords="17,471,409,489"/>
+<area shape="rect" id="node0" href="CsTransform.pynufft.pynufft-class.html#pseudoinverse" title="CsTransform.pynufft.pynufft.pseudoinverse" alt="" coords="17,489,409,508"/>
+<area shape="rect" id="node0" href="CsTransform.pynufft.pynufft-class.html#forwardbackward2" title="Update the data&#45;space" alt="" coords="17,508,409,527"/>
+<area shape="rect" id="node0" href="CsTransform.pynufft.pynufft-class.html#maxrowsum" title="CsTransform.pynufft.pynufft.maxrowsum" alt="" coords="17,527,409,545"/>
+<area shape="rect" id="node0" href="CsTransform.pynufft.pynufft-class.html#adjoint2" title="adjoint operator to calcualte AT*y" alt="" coords="17,564,409,583"/>
+<area shape="rect" id="node1" href="CsTransform.pynufft.pynufft-class.html" title="CsTransform.pynufft.pynufft" alt="" coords="5,270,421,589"/>
+<area shape="rect" id="node1" href="javascript:void(0);" title="CsTransform.nufft.nufft.Kd2Nd" alt="" coords="69,39,357,57"/>
+<area shape="rect" id="node1" href="javascript:void(0);" title="Now transform Nd grids to Kd grids(not be reshaped)" alt="" coords="69,57,357,76"/>
+<area shape="rect" id="node1" href="javascript:void(0);" title="backward(x): method of class pyNufft" alt="" coords="69,76,357,95"/>
+<area shape="rect" id="node1" href="javascript:void(0);" title="embedded fftn: abstraction of fft for future gpu computing" alt="" coords="69,95,357,113"/>
+<area shape="rect" id="node1" href="javascript:void(0);" title="embedded fftn: abstraction of fft for future gpu computing" alt="" coords="69,113,357,132"/>
+<area shape="rect" id="node1" href="javascript:void(0);" title="CsTransform.nufft.nufft.finalization" alt="" coords="69,132,357,151"/>
+<area shape="rect" id="node1" href="javascript:void(0);" title="foward(x): method of class pyNufft" alt="" coords="69,151,357,169"/>
+<area shape="rect" id="node1" href="javascript:void(0);" title="gpufftn: an interface to external gpu fftn: not working to date: awaiting &#160;more reliable gpu codes" alt="" coords="69,169,357,188"/>
+<area shape="rect" id="node1" href="javascript:void(0);" title="gpufftn: an interface to external gpu fftn: not working to date: awaiting &#160;more reliable gpu codes" alt="" coords="69,188,357,207"/>
+<area shape="rect" id="node1" href="javascript:void(0);" title="Select the center of FOV" alt="" coords="69,207,357,225"/>
+<area shape="rect" id="node1" href="javascript:void(0);" title="Create the density function by iterative solution" alt="" coords="69,225,357,244"/>
+<area shape="rect" id="node2" href="javascript:void(0);" title="pyNuff is ported to Python and Refined by Jyh&#45;Miin Lin at Cambridge University" alt="" coords="57,6,369,250"/>
+</map>
+  <img src="uml_class_diagram_for_cstransf.gif" alt='' usemap="#uml_class_diagram_for_cstransf" ismap="ismap" class="graph-without-title" />
+</center>
+</center>
+<hr />
+<!-- ==================== INSTANCE METHODS ==================== -->
+<a name="section-InstanceMethods"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Instance Methods</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-InstanceMethods"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="CsTransform.pynufft.pynufft-class.html#__init__" class="summary-sig-name">__init__</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">om</span>,
+        <span class="summary-sig-arg">Nd</span>,
+        <span class="summary-sig-arg">Kd</span>,
+        <span class="summary-sig-arg">Jd</span>,
+        <span class="summary-sig-arg">n_shift</span>=<span class="summary-sig-default">None</span>)</span><br />
+      constructor of pyNufft</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="CsTransform.pynufft-pysrc.html#pynufft.__init__">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="CsTransform.pynufft.pynufft-class.html#initialize_gpu" class="summary-sig-name">initialize_gpu</a>(<span class="summary-sig-arg">self</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="CsTransform.pynufft-pysrc.html#pynufft.initialize_gpu">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="gpu_k_deconv"></a><span class="summary-sig-name">gpu_k_deconv</span>(<span class="summary-sig-arg">self</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="CsTransform.pynufft-pysrc.html#pynufft.gpu_k_deconv">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="gpu_k_modulate"></a><span class="summary-sig-name">gpu_k_modulate</span>(<span class="summary-sig-arg">self</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="CsTransform.pynufft-pysrc.html#pynufft.gpu_k_modulate">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="gpu_Nd2KdWKd2Nd"></a><span class="summary-sig-name">gpu_Nd2KdWKd2Nd</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">x</span>,
+        <span class="summary-sig-arg">weight_flag</span>)</span><br />
+      Now transform Nd grids to Kd grids(not be reshaped)</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="CsTransform.pynufft-pysrc.html#pynufft.gpu_Nd2KdWKd2Nd">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="gpu_forwardbackward"></a><span class="summary-sig-name">gpu_forwardbackward</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">x</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="CsTransform.pynufft-pysrc.html#pynufft.gpu_forwardbackward">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="true_forward"></a><span class="summary-sig-name">true_forward</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">my_phantom</span>)</span><br />
+      compute the exact NUFT without sparse approximation only for 
+      simulation</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="CsTransform.pynufft-pysrc.html#pynufft.true_forward">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="forwardbackward"></a><span class="summary-sig-name">forwardbackward</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">x</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="CsTransform.pynufft-pysrc.html#pynufft.forwardbackward">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="pseudoinverse2"></a><span class="summary-sig-name">pseudoinverse2</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">data</span>)</span><br />
+      density compensation</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="CsTransform.pynufft-pysrc.html#pynufft.pseudoinverse2">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="pseudoinverse3"></a><span class="summary-sig-name">pseudoinverse3</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">data</span>,
+        <span class="summary-sig-arg">mu</span>,
+        <span class="summary-sig-arg">LMBD</span>,
+        <span class="summary-sig-arg">gamma</span>,
+        <span class="summary-sig-arg">nInner</span>,
+        <span class="summary-sig-arg">nBreg</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="CsTransform.pynufft-pysrc.html#pynufft.pseudoinverse3">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="pseudoinverse"></a><span class="summary-sig-name">pseudoinverse</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">data</span>,
+        <span class="summary-sig-arg">mu</span>,
+        <span class="summary-sig-arg">LMBD</span>,
+        <span class="summary-sig-arg">gamma</span>,
+        <span class="summary-sig-arg">nInner</span>,
+        <span class="summary-sig-arg">nBreg</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="CsTransform.pynufft-pysrc.html#pynufft.pseudoinverse">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_kernel"></a><span class="summary-sig-name">_kernel</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">f</span>,
+        <span class="summary-sig-arg">st</span>,
+        <span class="summary-sig-arg">mu</span>,
+        <span class="summary-sig-arg">LMBD</span>,
+        <span class="summary-sig-arg">gamma</span>,
+        <span class="summary-sig-arg">nInner</span>,
+        <span class="summary-sig-arg">nBreg</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="CsTransform.pynufft-pysrc.html#pynufft._kernel">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_update_u"></a><span class="summary-sig-name">_update_u</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">murf</span>,
+        <span class="summary-sig-arg">u</span>,
+        <span class="summary-sig-arg">uker</span>,
+        <span class="summary-sig-arg">xx</span>,
+        <span class="summary-sig-arg">bb</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="CsTransform.pynufft-pysrc.html#pynufft._update_u">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_k_deconv"></a><span class="summary-sig-name">_k_deconv</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">u</span>,
+        <span class="summary-sig-arg">uker</span>,
+        <span class="summary-sig-arg">st</span>,
+        <span class="summary-sig-arg">flist</span>,
+        <span class="summary-sig-arg">mylist</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="CsTransform.pynufft-pysrc.html#pynufft._k_deconv">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_cg_step"></a><span class="summary-sig-name">_cg_step</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">rhs</span>,
+        <span class="summary-sig-arg">u</span>,
+        <span class="summary-sig-arg">uker</span>,
+        <span class="summary-sig-arg">st</span>,
+        <span class="summary-sig-arg">flist</span>,
+        <span class="summary-sig-arg">mylist</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="CsTransform.pynufft-pysrc.html#pynufft._cg_step">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_constraint"></a><span class="summary-sig-name">_constraint</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">xx</span>,
+        <span class="summary-sig-arg">bb</span>)</span><br />
+      include TVconstraint and others</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="CsTransform.pynufft-pysrc.html#pynufft._constraint">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_shrink"></a><span class="summary-sig-name">_shrink</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">dd</span>,
+        <span class="summary-sig-arg">bb</span>,
+        <span class="summary-sig-arg">thrsld</span>)</span><br />
+      soft-thresholding the edges</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="CsTransform.pynufft-pysrc.html#pynufft._shrink">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_make_split_variables"></a><span class="summary-sig-name">_make_split_variables</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">u</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="CsTransform.pynufft-pysrc.html#pynufft._make_split_variables">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_make_sense"></a><span class="summary-sig-name">_make_sense</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">u0</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="CsTransform.pynufft-pysrc.html#pynufft._make_sense">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_create_kspace_sampling_density"></a><span class="summary-sig-name">_create_kspace_sampling_density</span>(<span class="summary-sig-arg">self</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="CsTransform.pynufft-pysrc.html#pynufft._create_kspace_sampling_density">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_create_laplacian_kernel"></a><span class="summary-sig-name">_create_laplacian_kernel</span>(<span class="summary-sig-arg">self</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="CsTransform.pynufft-pysrc.html#pynufft._create_laplacian_kernel">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_expand_deconv_kernel_dimension"></a><span class="summary-sig-name">_expand_deconv_kernel_dimension</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">uker</span>,
+        <span class="summary-sig-arg">L</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="CsTransform.pynufft-pysrc.html#pynufft._expand_deconv_kernel_dimension">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_expand_RTR"></a><span class="summary-sig-name">_expand_RTR</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">RTR</span>,
+        <span class="summary-sig-arg">L</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="CsTransform.pynufft-pysrc.html#pynufft._expand_RTR">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_update_d"></a><span class="summary-sig-name">_update_d</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">u</span>,
+        <span class="summary-sig-arg">dd</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="CsTransform.pynufft-pysrc.html#pynufft._update_d">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_update_b"></a><span class="summary-sig-name">_update_b</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">bb</span>,
+        <span class="summary-sig-arg">dd</span>,
+        <span class="summary-sig-arg">xx</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="CsTransform.pynufft-pysrc.html#pynufft._update_b">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_create_mask"></a><span class="summary-sig-name">_create_mask</span>(<span class="summary-sig-arg">self</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="CsTransform.pynufft-pysrc.html#pynufft._create_mask">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="forwardbackward2"></a><span class="summary-sig-name">forwardbackward2</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">x</span>)</span><br />
+      Update the data-space</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="CsTransform.pynufft-pysrc.html#pynufft.forwardbackward2">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="maxrowsum"></a><span class="summary-sig-name">maxrowsum</span>(<span class="summary-sig-arg">self</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="CsTransform.pynufft-pysrc.html#pynufft.maxrowsum">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="CsTransform.pynufft.pynufft-class.html#backward2" class="summary-sig-name">backward2</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">X</span>)</span><br />
+      backward2(x): method of class pyNufft</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="CsTransform.pynufft-pysrc.html#pynufft.backward2">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="adjoint"></a><span class="summary-sig-name">adjoint</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">f</span>)</span><br />
+      adjoint operator to calcualte AT*y</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="CsTransform.pynufft-pysrc.html#pynufft.adjoint">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="adjoint2"></a><span class="summary-sig-name">adjoint2</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">f</span>)</span><br />
+      adjoint operator to calcualte AT*y</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="CsTransform.pynufft-pysrc.html#pynufft.adjoint2">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_external_update_new"></a><span class="summary-sig-name">_external_update_new</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">u</span>,
+        <span class="summary-sig-arg">uf</span>,
+        <span class="summary-sig-arg">u0</span>,
+        <span class="summary-sig-arg">u_k_1</span>,
+        <span class="summary-sig-arg">outer</span>)</span><br />
+      add conjugated gradient</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="CsTransform.pynufft-pysrc.html#pynufft._external_update_new">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_external_update"></a><span class="summary-sig-name">_external_update</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">u</span>,
+        <span class="summary-sig-arg">uf</span>,
+        <span class="summary-sig-arg">u0</span>,
+        <span class="summary-sig-arg">u_k_1</span>,
+        <span class="summary-sig-arg">outer</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="CsTransform.pynufft-pysrc.html#pynufft._external_update">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+  <tr>
+    <td colspan="2" class="summary">
+    <p class="indent-wrapped-lines"><b>Inherited from <code>nufft.nufft</code></b>:
+      <code>Kd2Nd</code>,
+      <code>Nd2Kd</code>,
+      <code>backward</code>,
+      <code>emb_fftn</code>,
+      <code>emb_ifftn</code>,
+      <code>finalization</code>,
+      <code>forward</code>,
+      <code>gpufftn</code>,
+      <code>gpuifftn</code>,
+      <code>linear_phase</code>,
+      <code>pipe_density</code>
+      </p>
+    </td>
+  </tr>
+</table>
+<!-- ==================== METHOD DETAILS ==================== -->
+<a name="section-MethodDetails"></a>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Method Details</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-MethodDetails"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+</table>
+<a name="__init__"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">__init__</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">om</span>,
+        <span class="sig-arg">Nd</span>,
+        <span class="sig-arg">Kd</span>,
+        <span class="sig-arg">Jd</span>,
+        <span class="sig-arg">n_shift</span>=<span class="sig-default">None</span>)</span>
+    <br /><em class="fname">(Constructor)</em>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="CsTransform.pynufft-pysrc.html#pynufft.__init__">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>constructor of pyNufft</p>
+  <dl class="fields">
+    <dt>Overrides:
+        nufft.nufft.__init__
+        <dd><em class="note">(inherited documentation)</em></dd>
+    </dt>
+  </dl>
+</td></tr></table>
+</div>
+<a name="initialize_gpu"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">initialize_gpu</span>(<span class="sig-arg">self</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="CsTransform.pynufft-pysrc.html#pynufft.initialize_gpu">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  
+  <dl class="fields">
+    <dt>Overrides:
+        nufft.nufft.initialize_gpu
+    </dt>
+  </dl>
+</td></tr></table>
+</div>
+<a name="backward2"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">backward2</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">X</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="CsTransform.pynufft-pysrc.html#pynufft.backward2">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>backward2(x): method of class pyNufft</p>
+  <p>from [M x Lprod] shaped input, compute its adjoint(conjugate) of 
+  Non-uniform Fourier transform</p>
+  <p>INPUT: X: ndarray, [M, Lprod] (Lprod=1 in case 1) where M =st['M']</p>
+  <p>OUTPUT: x: ndarray, [Nd[0], Nd[1], ... , Kd[dd-1], Lprod]</p>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<br />
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="CsTransform.pynufft-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+      <th class="navbar" width="100%"></th>
+  </tr>
+</table>
+<table border="0" cellpadding="0" cellspacing="0" width="100%%">
+  <tr>
+    <td align="left" class="footer">
+    Generated by Epydoc 3.0.1 on Fri Feb 27 14:50:19 2015
+    </td>
+    <td align="right" class="footer">
+      <a target="mainFrame" href="http://epydoc.sourceforge.net"
+        >http://epydoc.sourceforge.net</a>
+    </td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+  <!--
+  // Private objects are initially displayed (because if
+  // javascript is turned off then we want them to be
+  // visible); but by default, we want to hide them.  So hide
+  // them unless we have a cookie that says to show them.
+  checkCookie();
+  // -->
+</script>
+</body>
+</html>

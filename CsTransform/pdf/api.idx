@@ -1,0 +1,31 @@
+\indexentry{CsTransform \textit{(package)}!CsTransform.pynufft \textit{(module)}|(hyperpage}{2}
+\indexentry{CsTransform \textit{(package)}!CsTransform.pynufft \textit{(module)}!CsTransform.pynufft.DFT\_slow \textit{(function)}|hyperpage}{2}
+\indexentry{CsTransform \textit{(package)}!CsTransform.pynufft \textit{(module)}!CsTransform.pynufft.DFT\_point \textit{(function)}|hyperpage}{2}
+\indexentry{CsTransform \textit{(package)}!CsTransform.pynufft \textit{(module)}!CsTransform.pynufft.show\_3D \textit{(function)}|hyperpage}{2}
+\indexentry{CsTransform \textit{(package)}!CsTransform.pynufft \textit{(module)}!CsTransform.pynufft.test\_3D \textit{(function)}|hyperpage}{2}
+\indexentry{CsTransform \textit{(package)}!CsTransform.pynufft \textit{(module)}!CsTransform.pynufft.test\_prolate \textit{(function)}|hyperpage}{2}
+\indexentry{CsTransform \textit{(package)}!CsTransform.pynufft \textit{(module)}!CsTransform.pynufft.test\_2D \textit{(function)}|hyperpage}{2}
+\indexentry{CsTransform \textit{(package)}!CsTransform.pynufft \textit{(module)}!CsTransform.pynufft.rFOV\_2D \textit{(function)}|hyperpage}{2}
+\indexentry{CsTransform \textit{(package)}!CsTransform.pynufft \textit{(module)}!CsTransform.pynufft.test\_radial \textit{(function)}|hyperpage}{2}
+\indexentry{CsTransform \textit{(package)}!CsTransform.pynufft \textit{(module)}!CsTransform.pynufft.test\_1D \textit{(function)}|hyperpage}{2}
+\indexentry{CsTransform \textit{(package)}!CsTransform.pynufft \textit{(module)}!CsTransform.pynufft.test\_2D\_multiprocessing \textit{(function)}|hyperpage}{2}
+\indexentry{CsTransform \textit{(package)}!CsTransform.pynufft \textit{(module)}!CsTransform.pynufft.test\_wavelet \textit{(function)}|hyperpage}{2}
+\indexentry{CsTransform \textit{(package)}!CsTransform.pynufft \textit{(module)}!CsTransform.pynufft.histeq \textit{(function)}|hyperpage}{3}
+\indexentry{CsTransform \textit{(package)}!CsTransform.pynufft \textit{(module)}!CsTransform.pynufft.test\_SR \textit{(function)}|hyperpage}{3}
+\indexentry{CsTransform \textit{(package)}!CsTransform.pynufft \textit{(module)}!CsTransform.pynufft.pynufft \textit{(class)}|(hyperpage}{3}
+\indexentry{CsTransform \textit{(package)}!CsTransform.pynufft \textit{(module)}!CsTransform.pynufft.pynufft \textit{(class)}!CsTransform.pynufft.pynufft.gpu\_k\_deconv \textit{(method)}|hyperpage}{3}
+\indexentry{CsTransform \textit{(package)}!CsTransform.pynufft \textit{(module)}!CsTransform.pynufft.pynufft \textit{(class)}!CsTransform.pynufft.pynufft.gpu\_k\_modulate \textit{(method)}|hyperpage}{3}
+\indexentry{CsTransform \textit{(package)}!CsTransform.pynufft \textit{(module)}!CsTransform.pynufft.pynufft \textit{(class)}!CsTransform.pynufft.pynufft.gpu\_Nd2KdWKd2Nd \textit{(method)}|hyperpage}{3}
+\indexentry{CsTransform \textit{(package)}!CsTransform.pynufft \textit{(module)}!CsTransform.pynufft.pynufft \textit{(class)}!CsTransform.pynufft.pynufft.gpu\_forwardbackward \textit{(method)}|hyperpage}{3}
+\indexentry{CsTransform \textit{(package)}!CsTransform.pynufft \textit{(module)}!CsTransform.pynufft.pynufft \textit{(class)}!CsTransform.pynufft.pynufft.true\_forward \textit{(method)}|hyperpage}{4}
+\indexentry{CsTransform \textit{(package)}!CsTransform.pynufft \textit{(module)}!CsTransform.pynufft.pynufft \textit{(class)}!CsTransform.pynufft.pynufft.forwardbackward \textit{(method)}|hyperpage}{4}
+\indexentry{CsTransform \textit{(package)}!CsTransform.pynufft \textit{(module)}!CsTransform.pynufft.pynufft \textit{(class)}!CsTransform.pynufft.pynufft.pseudoinverse2 \textit{(method)}|hyperpage}{4}
+\indexentry{CsTransform \textit{(package)}!CsTransform.pynufft \textit{(module)}!CsTransform.pynufft.pynufft \textit{(class)}!CsTransform.pynufft.pynufft.pseudoinverse3 \textit{(method)}|hyperpage}{4}
+\indexentry{CsTransform \textit{(package)}!CsTransform.pynufft \textit{(module)}!CsTransform.pynufft.pynufft \textit{(class)}!CsTransform.pynufft.pynufft.pseudoinverse \textit{(method)}|hyperpage}{4}
+\indexentry{CsTransform \textit{(package)}!CsTransform.pynufft \textit{(module)}!CsTransform.pynufft.pynufft \textit{(class)}!CsTransform.pynufft.pynufft.forwardbackward2 \textit{(method)}|hyperpage}{4}
+\indexentry{CsTransform \textit{(package)}!CsTransform.pynufft \textit{(module)}!CsTransform.pynufft.pynufft \textit{(class)}!CsTransform.pynufft.pynufft.maxrowsum \textit{(method)}|hyperpage}{4}
+\indexentry{CsTransform \textit{(package)}!CsTransform.pynufft \textit{(module)}!CsTransform.pynufft.pynufft \textit{(class)}!CsTransform.pynufft.pynufft.backward2 \textit{(method)}|hyperpage}{4}
+\indexentry{CsTransform \textit{(package)}!CsTransform.pynufft \textit{(module)}!CsTransform.pynufft.pynufft \textit{(class)}!CsTransform.pynufft.pynufft.adjoint \textit{(method)}|hyperpage}{4}
+\indexentry{CsTransform \textit{(package)}!CsTransform.pynufft \textit{(module)}!CsTransform.pynufft.pynufft \textit{(class)}!CsTransform.pynufft.pynufft.adjoint2 \textit{(method)}|hyperpage}{4}
+\indexentry{CsTransform \textit{(package)}!CsTransform.pynufft \textit{(module)}!CsTransform.pynufft.pynufft \textit{(class)}|)}{4}
+\indexentry{CsTransform \textit{(package)}!CsTransform.pynufft \textit{(module)}|)}{4}
