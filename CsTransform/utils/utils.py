@@ -10,7 +10,7 @@ try:
 #     import matplotlib.pyplot
 #     import matplotlib.cm
     import scipy.linalg.lapack
-    import pywt # pyWavelets
+#    import pywt # pyWavelets
     
 #     import pygasp.dwt.dwt as gasp
     # import matplotlib.numerix 

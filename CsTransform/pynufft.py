@@ -3,7 +3,7 @@ package docstring
 author: Jyh-Miin Lin Cambridge University
 address: jyhmiinlin at gmail.com
 Created on 2013/1/21
- 
+
 ================================================================================
 This file is part of pynufft.
 
@@ -25,10 +25,17 @@ First, see test_1D(),test_2D(), test_3D(), examples
  
 '''
 
+import sys
+sys.path.append('..')
+sys.path.append('utils')
+sys.path.append('.')  
+from CsTransform.utils.utils import *
+
 try:
-    from nufft import *
+    from CsTransform.nufft import *
     import numpy
-    import scipy.fftpack
+#     import scipy.fftpack
+    import numpy.fft as fftpack
     import numpy.random
     import matplotlib.pyplot
     import matplotlib.cm
@@ -38,7 +45,7 @@ try:
 #     import pygasp.dwt.dwt as gasp
     # import matplotlib.numerix 
     # import matplotlib.numerix.random_array
-    import sys
+
 #     import pywt # pyWavelets
 #     import utils
 except:
@@ -46,10 +53,6 @@ except:
     print('numpy, scipy, matplotlib, pyWavelets are required')
     raise
 
-
-sys.path.append('..')
-sys.path.append('utils') 
-from utils.utils import *
 
 cmap=matplotlib.cm.gray
 # norm=matplotlib.colors.Normalize(vmin=-1.0, vmax=1.0)
@@ -59,6 +62,13 @@ dtype =  numpy.complex64
 #  
 # except:
 #     print('numba not supported')
+
+try: 
+    xrange # python3 compatibility
+except NameError: 
+    xrange = range # python2 
+
+# from numpy import arange as xrange
   
 def DFT_slow(x):
     """
@@ -67,7 +77,7 @@ def DFT_slow(x):
     """
     x = numpy.asarray(x, dtype=float)
     N = x.shape[0]
-    n = numpy.arange(N)
+    n = xrange(N)
     k = n.reshape((N, 1))
     
     M = numpy.exp(-2j * numpy.pi * k * n / N)
@@ -80,7 +90,7 @@ def DFT_point(x, k):
     """
     x = numpy.asarray(x, dtype=float)
     N = x.shape[0]
-    n = numpy.arange(N)
+    n = xrange(N)
 #     k = n.reshape((N, 1))
     M = numpy.exp(-2j * numpy.pi * k * n / N)
     return numpy.dot(M, x)
@@ -94,7 +104,7 @@ class pynufft(nufft):
 #             n_shift=tuple(list(n_shift)+numpy.array(Nd)/2)
             
         nufft.__init__(self,om, Nd, Kd,Jd,n_shift)
-        self.beta = 2.0 #strength of shrinkage
+        self.beta = 1.0 #strength of shrinkage
         self.nufft_type= 1 # obsolte: 1: Toeplitz-NUFFT, 0: full-NUFFT
         self.debug= 1 # 2: depicting the intermediate images; 1: txt debug; 0: off
     def initialize_gpu(self):
@@ -117,13 +127,15 @@ class pynufft(nufft):
 # #         print('doing gpu_k_modulate')
 #         return 0    
     def gpu_k_deconv(self):
+        print('gpu_kdeconv')
         self.myfft(self.tmp_dev, self.data_dev,inverse=False)
-        if self.gpu_api == 'cuda':
-            self.tmp_dev._elwise_multiply( self.W2_dev, self.data_dev) # cluda.cuda_api()
-        elif self.gpu_api == 'opencl':
-            self.tmp_dev._elwise_multiply(  self.data_dev, self.tmp_dev, self.W2_dev) # cluda.ocl_api()
+#         if self.gpu_api == 'cuda':
+#             self.tmp_dev._elwise_multiply( self.W2_dev, self.data_dev) # cluda.cuda_api()
+#         elif self.gpu_api == 'opencl':
+        self.tmp_dev._elwise_multiply(  self.data_dev, self.tmp_dev, self.W2_dev) # cluda.ocl_api()
         self.myfft(self.data_dev, self.data_dev,inverse=True)
-        return 0            
+        return 0 
+    
     def gpu_k_modulate(self):
 #         try:
         self.myfft(self.tmp_dev, self.data_dev,inverse=False)
@@ -134,10 +146,10 @@ class pynufft(nufft):
         # element-wise multiplication is subject to changes of API in pyopencl and pycuda ...
         # Be cautious!!
 #         print('gpu_api', self.gpu_api)
-        if self.gpu_api == 'cuda':
-            self.tmp_dev._elwise_multiply( self.W_dev, self.data_dev) # cluda.cuda_api()
-        elif self.gpu_api == 'opencl':
-            self.tmp_dev._elwise_multiply(  self.data_dev, self.tmp_dev, self.W_dev) # cluda.ocl_api()
+#         if self.gpu_api == 'cuda':
+#             self.tmp_dev._elwise_multiply( self.W_dev, self.data_dev) # cluda.cuda_api()
+#         elif self.gpu_api == 'opencl':
+        self.tmp_dev._elwise_multiply(  self.data_dev, self.tmp_dev, self.W_dev) # cluda.ocl_api()
          
 #         print('doing gpu_k_modulate')
         self.myfft(self.data_dev, self.data_dev,inverse=True)
@@ -235,11 +247,11 @@ class pynufft(nufft):
         Nd = self.st['Nd'] # dimension in image domain
         M = self.st['M']
         data = numpy.zeros( (M,1), dtype = dtype)
-        modulate_index_x = numpy.arange(0,Nd[0])*1.0 - Nd[0]/2#/Nd[0]
+        modulate_index_x = xrange(0,Nd[0])*1.0 - Nd[0]/2#/Nd[0]
         modulate_index_x = numpy.reshape(modulate_index_x, (Nd[0],1))
         modulate_index_x = numpy.tile(modulate_index_x, (1, Nd[1]))
       
-        modulate_index_y = numpy.arange(0,Nd[1])*1.0- Nd[1]/2#/Nd[1]
+        modulate_index_y = xrange(0,Nd[1])*1.0- Nd[1]/2#/Nd[1]
         modulate_index_y = numpy.reshape(modulate_index_y, (1, Nd[1]))
         modulate_index_y = numpy.tile( modulate_index_y, ( Nd[0],1))
 #         matplotlib.pyplot.imshow(modulate_index_x)
@@ -302,12 +314,6 @@ class pynufft(nufft):
         density compensation 
         '''
         self.f = data
-#         self.mu = mu
-#         self.LMBD = LMBD
-#         self.gamma = gamma
-#         self.nInner= nInner
-#         self.nBreg= nBreg
-#         print(numpy.size(data) , self.st['M'] )
                  
         if numpy.size(data) == self.st['M']:
             self.st['senseflag'] = 0
@@ -364,63 +370,57 @@ class pynufft(nufft):
                     self.st['mask'] = appendmat(self.st['mask'],u0.shape[pp] )
                     self.st['mask2'] = appendmat(self.st['mask2'],u0.shape[pp] )
     #===============================================================================
-             
-            #estimate sensitivity maps by divided by rms images
+
             self.st = self._make_sense(u0) # setting up sense map in st['sensemap']
              
             self.st['senseflag']=1 # turn-on sense, to get sensemap
-       
-     
-            #scale back the _constrainted factor LMBD
-#             self.LMBD=self.LMBD/1.0
-        #CS reconstruction
+
             u0 = u0*self.st['sensemap'].conj()#/(self.st['sensemap'].conj()*self.st['sensemap']+1e-2)
             self.u = CombineMulti(u0,-1)[...,0]
-#         self.u, self.ustack = self._kernel(self.f, self.st , self.mu, self.LMBD, self.gamma, 
-#                           self.nInner,self.nBreg)
-        fermi = scipy.fftpack.fftshift( self.st['fermi'] )
-#         matplotlib.pyplot.imshow(fermi.real)
-#         matplotlib.pyplot.show()
-#         for jj in xrange(0,self.u.shape[-1]):
-#             u[...,jj] = u[...,jj]*(self.st['sn']**1)# rescale the final image intensity
-#             u[...,jj] = scipy.fftpack.ifftn(scipy.fftpack.fftn(u[...,jj])*fermi ) # apply GE's fermi filter
-#             if st['senseflag']== 1:
-        self.u = scipy.fftpack.ifftn(scipy.fftpack.fftn(self.u)*fermi )  
-         
-#         for jj in xrange(0,self.u.shape[-1]):
-#             self.u[...,jj] = self.u[...,jj]*(self.st['sn']**0.7)# rescale the final image intensity
-#         
+
+#         fermi = fftpack.fftshift( self.st['fermi'] )
+# 
+#         self.u = fftpack.ifftn(fftpack.fftn(self.u)*fermi ) 
+#          
+   
         if self.u.shape[-1] == 1:
             if numpy.ndim(self.u) != numpy.ndim(self.st['Nd']):  # alwasy true?          
                 self.u = self.u[...,0]
  
-#         self.u = Normalize(self.u)
-#         fermi = scipy.fftpack.fftshift( self.st['fermi'] )
-# #         matplotlib.pyplot.imshow(fermi.real)
-# #         matplotlib.pyplot.show()
-# #         for jj in xrange(0,self.u.shape[-1]):
-# #             u[...,jj] = u[...,jj]*(self.st['sn']**1)# rescale the final image intensity
-# #             u[...,jj] = scipy.fftpack.ifftn(scipy.fftpack.fftn(u[...,jj])*fermi ) # apply GE's fermi filter
-# #             if st['senseflag']== 1:
-#         u[...,jj] = scipy.fftpack.ifftn(scipy.fftpack.fftn(u[...,jj])*fermi ) 
         self.u = low_pass_phase(self.u)
-        return self.u   
-    def pseudoinverse3(self,data, mu, LMBD, gamma, nInner, nBreg): # main function of solver
-        image1 = self.pseudoinverse(data, mu, LMBD, gamma, nInner, nBreg)
-        image2 = self.backward2(data)
-        image1 = Normalize(image1)
-        image2 = Normalize(image2)
-        
-        kdensity = self.W
 
-        kdensity = scipy.misc.imresize(kdensity,self.st['Nd'])
-        kdensity= Normalize(kdensity)
-        
-        kspace1 = scipy.fftpack.fft2(image1)
-        kspace2 = scipy.fftpack.fft2(image2[...,0])
-        kspace3 = kspace1 * kdensity  + kspace2 * ( 1.0 - kdensity)  
-        image3  = scipy.fftpack.ifft2(kspace3)
-        return image3
+        return self.u   
+    def pseudoinverse4(self,data):
+        self.u = self.pseudoinverse2(data)
+
+        self.u = low_pass_fermi(self.u, self.st['fermi'] )        
+    
+        return self.u        
+    def pseudoinverse3(self,data):
+        self.u = self.pseudoinverse2(data)
+
+        self.u = low_pass_filter(self.u)        
+    
+        return self.u
+#     def pseudoinverse3(self,data, mu, LMBD, gamma, nInner, nBreg): # main function of solver
+#         image1 = self.pseudoinverse(data, mu, LMBD, gamma, nInner, nBreg)
+#         image2 = self.backward2(data)
+#         image1 = Normalize(image1)
+#         image2 = Normalize(image2)
+#         
+#         kdensity = self.W
+# 
+#         kdensity = scipy.misc.imresize(kdensity,self.st['Nd'])
+#         kdensity= Normalize(kdensity)
+#         
+# #         kspace1 = scipy.fftpack.fft2(image1)
+# #         kspace2 = scipy.fftpack.fft2(image2[...,0])
+#         kspace1 = fftpack.fft2(image1)
+#         kspace2 = fftpack.fft2(image2[...,0])
+#         kspace3 = kspace1 * kdensity  + kspace2 * ( 1.0 - kdensity)  
+# #         image3  = scipy.fftpack.ifft2(kspace3)
+#         image3  = fftpack.ifft2(kspace3)
+#         return image3
             
     def pseudoinverse(self,data, mu, LMBD, gamma, nInner, nBreg): # main function of solver
         self.f = data
@@ -592,7 +592,8 @@ class pynufft(nufft):
  
         u = self.adjoint(f)
 #         c = numpy.max(numpy.abs(u.flatten())) # Rough coefficient
- 
+ #         u = self.forwardbackward(u)
+
         for jj in xrange(0,u.shape[-1]):
             u[...,jj] = u[...,jj]/self.st['sn'] # remove scaling factor in the first place
         if self.debug ==0:
@@ -602,8 +603,24 @@ class pynufft(nufft):
         if st['senseflag'] == 1:
              
             u=CombineMulti(u,-1)[...,0:1] # summation of multicoil images
-         
- 
+            
+#         import matplotlib.pyplot
+#         matplotlib.pyplot.imshow(u[:,:,0].real)
+#         matplotlib.pyplot.show()            
+#         print(numpy.shape(u))         
+#         u = self.pseudoinverse2(f)
+#         print(numpy.shape(u))
+# #         import matplotlib.pyplot
+# #         matplotlib.pyplot.imshow(u[:,:].real)
+# #         matplotlib.pyplot.show()
+#         u = self.forwardbackward(u)
+#         print(numpy.shape(u))
+#         import matplotlib.pyplot
+#         matplotlib.pyplot.imshow(u[:,:,0].real)
+#         matplotlib.pyplot.show()        
+        
+        
+        
         u0 = numpy.copy(u)
 #         self.thresh_scale= numpy.mean(numpy.abs(u0[:]))#/numpy.max(self.st['w'])  
         self.thresh_scale= numpy.percentile(numpy.abs(u0[:]),95)         
@@ -677,9 +694,9 @@ class pynufft(nufft):
         u_k_1=0.0
         if self.gpu_flag == 1:
             self.thr.to_device((1.0/uker[...,0]).astype(dtype), dest = self.W2_dev)  
-        for outer in numpy.arange(0,nBreg):
+        for outer in xrange(0,nBreg):
              
-            for inner in numpy.arange(0,nInner):
+            for inner in xrange(0,nInner):
                 # update u
 #                 if self.debug==0:
 #                     pass
@@ -809,7 +826,8 @@ class pynufft(nufft):
  
  
         if st['senseflag']== 1:
-            fermi = scipy.fftpack.fftshift( self.st['fermi'] )
+#             fermi = scipy.fftpack.fftshift( self.st['fermi'] )
+            fermi = fftpack.fftshift( self.st['fermi'] )
 #         matplotlib.pyplot.imshow(fermi.real)
 #         matplotlib.pyplot.show()
         for jj in xrange(0,u.shape[-1]):
@@ -838,7 +856,7 @@ class pynufft(nufft):
 #        rhs = self.mu*murf + self.LMBD*self.get_Diff(x,y,bx,by) + self.gamma
         #=======================================================================
         # Trick: make "llist" for numpy.transpose 
-        mylist = tuple(numpy.arange(0,numpy.ndim(xx[0]))) 
+        mylist = tuple(xrange(0,numpy.ndim(xx[0]))) 
 #         tlist = mylist[1::-1]+mylist[2:] 
         #=======================================================================
         # update the right-head side terms
@@ -1205,12 +1223,14 @@ class pynufft(nufft):
 #             matplotlib.pyplot.show() 
             return st
         except: 
+            raise
             if self.debug > 0:
                 print('not runing svd')       
             if u0dims-1 >0:
                 rows=numpy.shape(u0)[0]
                 dpss_rows = numpy.kaiser(rows, 100)     
-                dpss_rows = scipy.fftpack.fftshift(dpss_rows)
+#                 dpss_rows = scipy.fftpack.fftshift(dpss_rows)
+                dpss_rows = fftpack.fftshift(dpss_rows)
                 dpss_rows[3:-3] = 0.0
                 dpss_fil = dpss_rows
                 if self.debug==0:
@@ -1221,7 +1241,8 @@ class pynufft(nufft):
                                    
                 cols=numpy.shape(u0)[1]
                 dpss_cols = numpy.kaiser(cols, 100)            
-                dpss_cols = scipy.fftpack.fftshift(dpss_cols)
+#                 dpss_cols = scipy.fftpack.fftshift(dpss_cols)
+                dpss_cols = fftpack.fftshift(dpss_cols)
                 dpss_cols[3:-3] = 0.0
                  
                 dpss_fil = appendmat(dpss_fil,cols)
@@ -1236,7 +1257,8 @@ class pynufft(nufft):
                  
                 zag = numpy.shape(u0)[2]
                 dpss_zag = numpy.kaiser(zag, 100)            
-                dpss_zag = scipy.fftpack.fftshift(dpss_zag)
+#                 dpss_zag = scipy.fftpack.fftshift(dpss_zag)
+                dpss_zag = fftpack.fftshift(dpss_zag)
                 dpss_zag[3:-3] = 0.0
                 dpss_fil = appendmat(dpss_fil,zag)
                           
@@ -1261,7 +1283,7 @@ class pynufft(nufft):
      
             #    print('L',L)
             #    print('rms',numpy.shape(rms))
-            for ll in numpy.arange(0,L):
+            for ll in xrange(0,L):
                 st['sensemap'][...,ll]=(u0[...,ll]+1e-16)/(rms+1e-16)
                 if self.debug==0:
                     pass
@@ -1284,11 +1306,11 @@ class pynufft(nufft):
                                                             range(0,numpy.ndim(st['sensemap'][...,ll])), 
                                                             threads=self.threads)                                                 
                 else:                                                                    
-                    st['sensemap'][...,ll] = scipy.fftpack.fftn(st['sensemap'][...,ll], 
+                    st['sensemap'][...,ll] = fftpack.fftn(st['sensemap'][...,ll], 
                                                       st['sensemap'][...,ll].shape,
                                                             range(0,numpy.ndim(st['sensemap'][...,ll]))) 
                     st['sensemap'][...,ll] = st['sensemap'][...,ll] * dpss_fil
-                    st['sensemap'][...,ll] = scipy.fftpack.ifftn(st['sensemap'][...,ll], 
+                    st['sensemap'][...,ll] = fftpack.ifftn(st['sensemap'][...,ll], 
                                                       st['sensemap'][...,ll].shape,
                                                             range(0,numpy.ndim(st['sensemap'][...,ll])))                             
     #             st['sensemap'][...,ll]=scipy.fftpack.ifftn(scipy.fftpack.fftn(st['sensemap'][...,ll])*dpss_fil)
@@ -1408,7 +1430,8 @@ class pynufft(nufft):
                 
         st['mask'][indx] =0.0       
 #         st['mask'] = 1.0/(1.0+numpy.exp( (tmp-1.05)/0.00001))
-        st['fermi'] =1.0/(1.0+numpy.exp( (tmp-20.0)/(20.0*2.0/st['Nd'][0])))
+#         st['fermi'] =1.0/(1.0+numpy.exp( (tmp-20.0)/(20.0*2.0/st['Nd'][0])))
+        st['fermi'] =1.0/(1.0+numpy.exp( (tmp-(st['Nd'][0]+20.0)/st['Nd'][0])/(20.0/st['Nd'][0])))
         st['mask2'] =1.0/(1.0+numpy.exp( (tmp-1.05)/0.01))
 #         matplotlib.pyplot.imshow( indx)
 #         matplotlib.pyplot.show() 
@@ -2102,7 +2125,7 @@ def test_2D_multiprocessing():
     # load example image    
  
     image = numpy.loadtxt('phantom_256_256.txt') 
-    image[128,128]= 1.0   
+#     image[128,128]= 1.0   
     Nd =(256,256) # image space size
     Kd =(512,512) # k-space size   
     Jd =(6,6) # interpolation size
@@ -2114,8 +2137,10 @@ def test_2D_multiprocessing():
      
      
     NufftObj = pynufft(om, Nd,Kd,Jd)   
-    NewObj = copy.deepcopy(NufftObj)
+#     NewObj = copy.deepcopy(NufftObj)
     # simulate "data"
+
+    print(NufftObj.st['p'].data.nbytes)
     data= NufftObj.forward(image )
 #     data2=data.copy()
 #     data2 =numpy.sqrt(data2)*10+(0.0+0.1j)
@@ -2133,11 +2158,13 @@ def test_2D_multiprocessing():
 #                          modules = ('numpy','pyfftw','pynufft'),globals=globals())
 #     image_recon = f1()    
 #     image_recon2 = f2()
+    NufftObj.initialize_gpu() 
+    image_recon = NufftObj.pseudoinverse(data, 1.0, 0.05, 0.01,2, 25)
      
-    image_recon = NewObj.pseudoinverse(data, 1.0, 0.05, 0.01,3, 20)
      
-     
-    image_blur = NufftObj.backward(data)
+    image_blur = NufftObj.pseudoinverse4(data) 
+    
+    image_blur = Normalize(image_blur)
     image_recon = Normalize(image_recon)
  
     matplotlib.pyplot.plot(om[:,0],om[:,1],'x')
@@ -2155,7 +2182,8 @@ def test_2D_multiprocessing():
                              norm = norm,cmap= cm,interpolation = 'nearest')
     matplotlib.pyplot.title('recovered image')    
     matplotlib.pyplot.subplot(2,2,2)
-    matplotlib.pyplot.imshow(image_blur[:,:,0].real,
+    print(numpy.shape(image_blur))
+    matplotlib.pyplot.imshow(image_blur.real,
                              norm = norm,cmap= cm,interpolation = 'nearest')
     matplotlib.pyplot.title('blurred image') 
     matplotlib.pyplot.subplot(2,2,4)
@@ -2174,7 +2202,7 @@ def test_2D_multiprocessing():
 #                              norm = norm,cmap= cm,interpolation = 'nearest')
 #     matplotlib.pyplot.title('recovered image')    
     matplotlib.pyplot.subplot(2,2,2)
-    matplotlib.pyplot.imshow(image_blur[:,:,0].real,
+    matplotlib.pyplot.imshow(image_blur[:,:].real,
                              norm = norm,cmap= cm,interpolation = 'nearest')
     matplotlib.pyplot.title('blurred image') 
     matplotlib.pyplot.subplot(2,2,4)
@@ -2278,11 +2306,11 @@ if __name__ == '__main__':
 #     test_radial()
 #     x = numpy.random.random(1024)
 #     print(DFT_point(x, -0))
-#     print( numpy.allclose(DFT_slow(x), numpy.fft.fft(x)) )
+#     print( numpy.allclose(DFT_slow(x), fftpack.fft(x)) )
 #     DFT_slow(x)
 #     cProfile.run('rFOV_2D()')
 #     rFOV_2D()
-    test_2D_multiprocessing()
+    cProfile.run('test_2D_multiprocessing()')
 #     import scipy.sparse
 #     A=scipy.sparse.lil_matrix((5,4))
 #     A[3,0:2] = 3.2

@@ -1,7 +1,7 @@
 import matplotlib.pyplot
 import numpy
 # import correctmotion
-import nitime.algorithms.spectral
+#import nitime.algorithms.spectral
 #     N=256
 #     width = 3
 #     n_bases= 30
@@ -1829,11 +1829,11 @@ class cine2DBinary_int32:
 #                                        )
         self.k_norm=norm_k
         self.tse=numpy.array(norm_k)
-        self.tse=scipy.fftpack.ifftshift(self.tse,axes=(0,1,))
+        self.tse[:]=scipy.fftpack.ifftshift(self.tse[:],axes=(0,1,))
         
-        self.tse=scipy.fftpack.ifftn(self.tse,axes=(0,1,))
+        self.tse[:]=scipy.fftpack.ifftn(self.tse[:],axes=(0,1,))
         
-        self.tse=scipy.fftpack.ifftshift(self.tse,axes=(0,1,))
+        self.tse[:]=scipy.fftpack.ifftshift(self.tse[:],axes=(0,1,))
 #         matplotlib.pyplot.imshow(numpy.abs(numpy.sum(self.tse,2)),matplotlib.cm.gray)
 #         matplotlib.pyplot.show()
         print('self.tse.shape',self.tse.shape)        

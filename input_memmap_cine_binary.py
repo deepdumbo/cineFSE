@@ -3,8 +3,8 @@ import GeRaw.pfileparser
 import numpy
 import matplotlib.pyplot
 cm=matplotlib.cm.gray
-import scipy.fftpack
-import scipy.fftpack._fftpack
+import numpy.fft as fftpack
+# import fftpack._fftpack
 import GeRaw.cinePPGVD
 import KspaceDesign.Sparse2D            
 import CsSolver.Cine2DSolver
@@ -553,29 +553,29 @@ def dante_cine_fse():
             tmpObj = copy.copy(cineObj)
             tmpObj.dim_x =tmpObj.dim_x/ncpu
              
-    #         tmpObj.tse = scipy.fftpack.fftshift(tmpObj.tse,axes=(0,1,))
+    #         tmpObj.tse = fftpack.fftshift(tmpObj.tse,axes=(0,1,))
     #          
-    #         tmpObj.tse=scipy.fftpack.fftn(tmpObj.tse,axes=(0,1,))
+    #         tmpObj.tse=fftpack.fftn(tmpObj.tse,axes=(0,1,))
     #          
-    #         tmpObj.tse=scipy.fftpack.fftshift(tmpObj.tse,axes=(0,1,))
+    #         tmpObj.tse=fftpack.fftshift(tmpObj.tse,axes=(0,1,))
              
             tmpObj.tse = tmpObj.tse[tmpObj.dim_x*zz:tmpObj.dim_x*(zz+1)]
              
-    #         tmpObj.tse = scipy.fftpack.ifftshift(tmpObj.tse,axes=(0,1,))
+    #         tmpObj.tse = fftpack.ifftshift(tmpObj.tse,axes=(0,1,))
     #          
-    #         tmpObj.tse=scipy.fftpack.ifftn(tmpObj.tse,axes=(0,1,))
+    #         tmpObj.tse=fftpack.ifftn(tmpObj.tse,axes=(0,1,))
     #          
-    #         tmpObj.tse=scipy.fftpack.ifftshift(tmpObj.tse,axes=(0,1,))
+    #         tmpObj.tse=fftpack.ifftshift(tmpObj.tse,axes=(0,1,))
              
-            tmpObj.f = scipy.fftpack.ifftshift(tmpObj.f,axes=(0,))
-            tmpObj.f = scipy.fftpack.ifftn(tmpObj.f,axes=(0,))
-            tmpObj.f = scipy.fftpack.ifftshift(tmpObj.f,axes=(0,))
+            tmpObj.f = fftpack.ifftshift(tmpObj.f,axes=(0,))
+            tmpObj.f = fftpack.ifftn(tmpObj.f,axes=(0,))
+            tmpObj.f = fftpack.ifftshift(tmpObj.f,axes=(0,))
             
             tmpObj.f = tmpObj.f[tmpObj.dim_x*zz:tmpObj.dim_x*(zz+1)]
             
-            tmpObj.f = scipy.fftpack.fftshift(tmpObj.f,axes=(0,))
-            tmpObj.f = scipy.fftpack.fftn(tmpObj.f,axes=(0,))
-            tmpObj.f = scipy.fftpack.fftshift(tmpObj.f,axes=(0,))        
+            tmpObj.f = fftpack.fftshift(tmpObj.f,axes=(0,))
+            tmpObj.f = fftpack.fftn(tmpObj.f,axes=(0,))
+            tmpObj.f = fftpack.fftshift(tmpObj.f,axes=(0,))        
             
             
                      
@@ -770,29 +770,29 @@ def para_process_int16(dirname,
         else:
             tmpObj.dim_x = cineObj.dim_x - (numpy.ceil((1.0)*cineObj.dim_x/ncpu))*(ncpu - 1)
             tmpObj.tse = tmpObj.tse[- tmpObj.dim_x:]
-#         tmpObj.tse = scipy.fftpack.fftshift(tmpObj.tse,axes=(0,1,))
+#         tmpObj.tse = fftpack.fftshift(tmpObj.tse,axes=(0,1,))
 #          
-#         tmpObj.tse=scipy.fftpack.fftn(tmpObj.tse,axes=(0,1,))
+#         tmpObj.tse=fftpack.fftn(tmpObj.tse,axes=(0,1,))
 #          
-#         tmpObj.tse=scipy.fftpack.fftshift(tmpObj.tse,axes=(0,1,))
+#         tmpObj.tse=fftpack.fftshift(tmpObj.tse,axes=(0,1,))
          
         
          
-#         tmpObj.tse = scipy.fftpack.ifftshift(tmpObj.tse,axes=(0,1,))
+#         tmpObj.tse = fftpack.ifftshift(tmpObj.tse,axes=(0,1,))
 #          
-#         tmpObj.tse=scipy.fftpack.ifftn(tmpObj.tse,axes=(0,1,))
+#         tmpObj.tse=fftpack.ifftn(tmpObj.tse,axes=(0,1,))
 #          
-#         tmpObj.tse=scipy.fftpack.ifftshift(tmpObj.tse,axes=(0,1,))
+#         tmpObj.tse=fftpack.ifftshift(tmpObj.tse,axes=(0,1,))
          
-        tmpObj.f = scipy.fftpack.ifftshift(tmpObj.f,axes=(0,))
-        tmpObj.f = scipy.fftpack.ifftn(tmpObj.f,axes=(0,))
-        tmpObj.f = scipy.fftpack.ifftshift(tmpObj.f,axes=(0,))
+        tmpObj.f = fftpack.ifftshift(tmpObj.f,axes=(0,))
+        tmpObj.f = fftpack.ifftn(tmpObj.f,axes=(0,))
+        tmpObj.f = fftpack.ifftshift(tmpObj.f,axes=(0,))
         
         tmpObj.f = tmpObj.f[tmpObj.dim_x*zz:tmpObj.dim_x*(zz+1)]
         
-        tmpObj.f = scipy.fftpack.fftshift(tmpObj.f,axes=(0,))
-        tmpObj.f = scipy.fftpack.fftn(tmpObj.f,axes=(0,))
-        tmpObj.f = scipy.fftpack.fftshift(tmpObj.f,axes=(0,))        
+        tmpObj.f = fftpack.fftshift(tmpObj.f,axes=(0,))
+        tmpObj.f = fftpack.fftn(tmpObj.f,axes=(0,))
+        tmpObj.f = fftpack.fftshift(tmpObj.f,axes=(0,))        
         
         
                  
@@ -838,7 +838,67 @@ def para_process_int16(dirname,
 #         os.mkdir(dirname+'thread_'+str(ncpu)+'_rfov_'+str(yrecon)+'/')
     
     numpy.save(dirname+'thread_'+str(ncpu)+'_rfov_'+str(yrecon)+'/'+'u_in_xyf',u_in_xyf) 
-           
+import copy
+class atomic_computation2:
+    def __init__(self,Cine2DSolver, cineObj ,tmp_file, tmp_shape, tmp_dtype, dim_1,dim_2):
+        self.Cine2DSolver =  Cine2DSolver 
+        self.cineObj =  cineObj 
+        self.tmp_shape=  tmp_shape
+        self.tmp_file = tmp_file
+        self.dim_1 = dim_1
+        self.dim_2 = dim_2  
+        self.tmp_dtype = tmp_dtype
+        
+        pass
+    def create(self,zz,ncpu):
+        tmpObj =  self.cineObj 
+# #         dividing data along frequency axis
+#         tmpObj.f = fftpack.ifftshift(tmpObj.f,axes=(0,))
+#         tmpObj.f = fftpack.ifftn(tmpObj.f,axes=(0,))
+#         tmpObj.f = fftpack.ifftshift(tmpObj.f,axes=(0,))
+#         
+#         if zz < ncpu -1:
+#             tmpObj.dim_x = numpy.ceil((1.0)*self.cineObj.dim_x/ncpu)
+#             tmpObj.tse = tmpObj.tse[tmpObj.dim_x*zz:tmpObj.dim_x*(zz+1)]
+#             tmpObj.f = tmpObj.f[tmpObj.dim_x*zz:tmpObj.dim_x*(zz+1)]
+#         else:
+#             tmpObj.dim_x = self.cineObj.dim_x - (numpy.ceil((1.0)*self.cineObj.dim_x/ncpu))*(ncpu - 1)
+#             tmpObj.tse = tmpObj.tse[- tmpObj.dim_x:]
+#             tmpObj.f = tmpObj.f[- tmpObj.dim_x:]
+        print(self.tmp_shape)
+        print(self.tmp_file)
+        print(self.tmp_dtype)
+#         with open(self.tmp_file, 'readonly') as ff:
+        mp = numpy.memmap(self.tmp_file, mode ='readonly', shape = self.tmp_shape, dtype = self.tmp_dtype)
+        
+        
+        if zz < ncpu -1:
+            tmpObj.dim_x = self.dim_1 
+
+            tmpObj.f = numpy.array (mp[   self.dim_1*zz:self.dim_1*(zz+1)] )
+        else:
+            tmpObj.dim_x = self.dim_2
+
+            tmpObj.f = numpy.array( mp[ -self.dim_2:] )
+#         del ff
+        del mp
+        tmpObj.f = fftpack.fftshift(tmpObj.f,axes=(0,))
+        tmpObj.f = fftpack.fftn(tmpObj.f,axes=(0,))
+        tmpObj.f = fftpack.fftshift(tmpObj.f,axes=(0,))   
+        print('data, type = ',tmpObj.f.dtype)
+        self.cineObj = tmpObj
+        pass
+    def run(self,  zz, mu, LMBD, gamma, nInner, nBreg, ncpu):
+        self.create(zz, ncpu)
+        return self.Cine2DSolver.pseudoinverse(self.cineObj, mu, LMBD, gamma, nInner, nBreg)
+import multiprocessing        
+def wrapper_atomic_computation(my_atomic_calc, zz,  mu, LMBD, gamma, nInner, nBreg, ncpu):
+    pid= os.getpid()
+    pinned_core = zz  % multiprocessing.cpu_count()
+    os.system("taskset -p -c %d %d" % ( pinned_core , pid))
+    return my_atomic_calc.run( zz, mu, LMBD, gamma, nInner, nBreg, ncpu)
+     
+
 def para_process_int32(dirname,
                        xres, # x dimension
                        yres, # number of phase encodings, y dim
@@ -852,29 +912,19 @@ def para_process_int32(dirname,
     import glob
     
     norm=matplotlib.colors.Normalize(vmin=0.0, vmax=1.0)
-    #===============================================================================
-#     cineObj=GeRaw.pfileparser.cine2DBinary('/home/sram/Cambridge_2012/DATA_MATLAB/Andrew/data_acq_20130412/cinefse_20130411_unsorted/cinefse_20130411c.data',
-#             '/home/sram/Cambridge_2012/DATA_MATLAB/Andrew/data_acq_20130412/cinefse_20130411_unsorted/variable_density_unsort_88.txt',
-#              0, 
-#               (512,256,4,12,88))
+ 
     data_file = glob.glob(dirname+'dante_cine_*.data')[0]
     print(data_file)
-#     vd_table_file=glob.glob(dirname+'*variable_density*')[0]
+ 
     vd_table_file='./sort88.txt'
     print(vd_table_file)
-#     trigger_file = '/home/sram/Cambridge_2012/DATA_MATLAB/Andrew/data_acq_20130425/PPGTrig_fse_cine_dante_20130411_0425201315_11_52_169_1st'
-#     ppgdata_file = '/home/sram/Cambridge_2012/DATA_MATLAB/Andrew/data_acq_20130425/PPGData_fse_cine_dante_20130411_0425201315_11_52_169_1st'
     trigger_file = glob.glob(dirname+'PPGTrig*')[0]
     print(trigger_file)
     ppgdata_file = glob.glob(dirname+'PPGData*')[0]
     print(ppgdata_file)
     seq_stamp_file = glob.glob(dirname+'cine_SLR_*')[0]
     print(seq_stamp_file)
-#     xres = 512
-#     yres = 256
-#     etl = 12
-#     necho=44
-#     ncoil =4
+
     cineObj=GeRaw.pfileparser.cine2DBinary_int32(data_file,
             vd_table_file,
              0, 
@@ -910,25 +960,10 @@ def para_process_int32(dirname,
     
     print('fsepointshape',fsepoint.shape)
     print('fsepoint',fsepoint-fsepoint[0])
-#     TR=2.5
-#     head_time=(30.0*1000.0/10.0)+ 0.0
-#     
-#     no_of_dummy_scan=2 # number of dummy scan
-#     no_of_effect_scan=88 # number of effective scan
-#     
-#     fsepoint=[]
-#     for pp in range(0,no_of_effect_scan):
-#         tmp_fsepoint=head_time+(pp+no_of_dummy_scan)*TR*1000/10.0+fsetime/10.0 # two dummy scans
-#         fsepoint=numpy.append(fsepoint,tmp_fsepoint)
-
-#    matplotlib.pyplot.plot(fsepoint,'x:')
-#    matplotlib.pyplot.show()
-    # Now determine the pulse time
+ 
     
     time_table=mod_by_trigger(ppgtrig,fsepoint)
-    
-#    matplotlib.pyplot.plot(time_table,'x')
-#    matplotlib.pyplot.show()
+ 
     
     
     vd_table=cineObj.vd#numpy.loadtxt('variable_density_sample_with_offset.txt')
@@ -940,8 +975,7 @@ def para_process_int32(dirname,
     
     print('time_table.shape',time_table.shape)
     print('vd_table.shape',vd_table.shape)
-    
-#    cineObj.f = numpy.fft.fftn(cineObj.f,axes=(0,))
+ 
 
     
     om[:,1] = numpy.array(time_table-0.5) # t-axis
@@ -959,36 +993,15 @@ def para_process_int32(dirname,
     LMBD=0.1
     gamma=0.01
     mu=1.0
-#    tse=cineObj.tse
-    
-    #sensemap = make_sense(cineObj.tse,Nd[1])
-        
-#     MyTransform = CsTransform.pynufft.pynufft( om, Nd,Kd,Jd)
-    #===============================================================================
-#     kytspace=numpy.reshape(MyTransform.st['q'],MyTransform.st['Kd'],order='F')
-   
-#    kytspace=numpy.fft.fftn(kytspace,axes=(1,))   
-#    matplotlib.pyplot.imshow(numpy.abs(kytspace))
-#    
-#    matplotlib.pyplot.show()
 
-        
-    '''
-    Now initialize the first estimation
-    '''
-#    Cine2DSolver = CsSolver.Cine2DSolver.Cine2DSolver(MyTransform, 
-#                    cineObj, mu, LMBD, gamma, nInner, nBreg)
-#     Cine2DSolver = CsSolver.Cine3DSolver.Cine3DSolver(MyTransform, 
-#                     cineObj, mu, LMBD, gamma, nInner, nBreg)    
-#     Cine2DSolver.solve()
-    Cine2DSolver = CsSolver.Cine2DSolver.Cine2DSolver( om, Nd,Kd,Jd)   
-#      
 ####################################################################################
  
-    import pp
-#     ppservers = ("10.155.174.185","10.155.174.168",)
-    job_server = pp.Server(ncpus = 2)#ppservers=ppservers, ncpus=2)
-    jobs = []
+    import multiprocessing
+#     import pp  
+#    pool = multiprocessing.Pool(processes = multiprocessing.cpu_count())
+    
+    result = []  
+
 #     ncpu = 24
 #     if numpy.mod(cineObj.dim_x,ncpu) == 0:
 #         pass
@@ -1000,46 +1013,111 @@ def para_process_int32(dirname,
     import copy
      
     
-    masterObj=()
-    for zz in range(0,ncpu):
-         
-        tmpObj = copy.copy(cineObj)
-#         dividing data along frequency axis
-        if zz < ncpu -1:
-            tmpObj.dim_x = numpy.ceil((1.0)*cineObj.dim_x/ncpu)
-            tmpObj.tse = tmpObj.tse[tmpObj.dim_x*zz:tmpObj.dim_x*(zz+1)]
-        else:
-            tmpObj.dim_x = cineObj.dim_x - (numpy.ceil((1.0)*cineObj.dim_x/ncpu))*(ncpu - 1)
-            tmpObj.tse = tmpObj.tse[- tmpObj.dim_x:]
+#     masterObj=()
+ 
+    Cine2DSolver = CsSolver.Cine2DSolver.Cine2DSolver( om, Nd,Kd,Jd)   
+    dim_x = cineObj.dim_x#   
 
-        tmpObj.f = scipy.fftpack.ifftshift(tmpObj.f,axes=(0,))
-        tmpObj.f = scipy.fftpack.ifftn(tmpObj.f,axes=(0,))
-        tmpObj.f = scipy.fftpack.ifftshift(tmpObj.f,axes=(0,))
-        tmpObj.f = tmpObj.f[tmpObj.dim_x*zz:tmpObj.dim_x*(zz+1)]
-        tmpObj.f = scipy.fftpack.fftshift(tmpObj.f,axes=(0,))
-        tmpObj.f = scipy.fftpack.fftn(tmpObj.f,axes=(0,))
-        tmpObj.f = scipy.fftpack.fftshift(tmpObj.f,axes=(0,))                      
-        masterObj =masterObj +(tmpObj,)
-#         asynchronous executions  
-        jobs.append(job_server.submit(Cine2DSolver.pseudoinverse, 
-                         (masterObj[zz], mu, LMBD, gamma, nInner, nBreg),
-                         modules = ('numpy','pynufft','scipy'),
-                         globals = globals()))
+
+    F = cineObj.f
+    
+    del cineObj.f
+    del cineObj.k
+    del cineObj.raw
+#     del cineObj.pdf
+    del cineObj.f_diff
+    del cineObj.k_norm     
+#         dividing data along frequency axis
+    F = fftpack.ifftshift(F,axes=(0,))
+    F = fftpack.ifftn(F,axes=(0,))
+    F = fftpack.ifftshift(F,axes=(0,))
+    tmp_file = str("/tmp/tmpF.dat")
+    tmp_shape = numpy.shape(F)
+    tmp_dtype = str( F.dtype)
+    print(tmp_dtype)
+    print(tmp_file)
+    print(tmp_shape)
+#     with open(tmp_file, 'write') as ff:
+    mp = numpy.memmap(tmp_file, mode='write', shape=tmp_shape, dtype = tmp_dtype)
+    mp[:,:,: ] =F[:,:,:]
+    mp.flush()
+    del mp
+#     return
+    my_atomic_calc = []
+    import copy
+    
+    dim_1 = numpy.round((1.0)* dim_x/ncpu).astype(int)
+    
+    if dim_x > dim_1 * (ncpu - 1):
+        dim_1 = numpy.floor((1.0)* dim_x/ncpu).astype(int)
         
-    u_in_xyf  = numpy.empty((xres,Nd[0],Nd[1],ncoil),dtype = numpy.complex128)
+    dim_2 =  dim_x - dim_1*(ncpu - 1)
+    print('dim1', dim_1,dim_2)
+    for zz in range(0,ncpu):
+
+        tmpObj = copy.copy(cineObj)
+
+        
+        if zz < ncpu -1:
+            tmpObj.dim_x = dim_1 
+#             print('dim_x', tmpObj.)
+            tmpObj.tse = tmpObj.tse[dim_1 * zz:dim_1*(zz+1)]
+#             tmpObj.f = F[   dim_1*zz:dim_1*(zz+1)]
+        else:
+            tmpObj.dim_x = dim_2
+            tmpObj.tse = tmpObj.tse[ -dim_2:]
+#             tmpObj.f = F[ -dim_2:]
+
+        
+        my_atomic_calc.append( atomic_computation2(Cine2DSolver, tmpObj , tmp_file, tmp_shape, tmp_dtype, dim_1,dim_2) )
+        
+    pool = multiprocessing.Pool(processes = ncpu)        
+    import time
+    t0 = time.time()    
+    for zz in range(0,ncpu):
+          
+        result.append(pool.apply_async(wrapper_atomic_computation, 
+                         (my_atomic_calc[zz], zz,  mu, LMBD, gamma, nInner, nBreg, ncpu) ) )
+#                          modules = ('numpy','pynufft','scipy'),
+#                          globals = globals()))
+        
+    u_in_xyf  = numpy.empty((xres,Nd[0],Nd[1],ncoil),dtype = numpy.complex64)
+#         if zz < ncpu -1:
+#             new_x = my_atomic_calc[zz].cineObj.dim_x#numpy.ceil((1.0)*dim_x/ncpu).astype(int)
+#             u_in_xyf[new_x*zz:new_x*(zz+1)] = result[zz].get()
+#         else:
+#             new_x = my_atomic_calc[zz].cineObj.dim_x#dim_x - (numpy.ceil((1.0)*dim_x/ncpu))*(ncpu - 1)
+#             u_in_xyf[- new_x:]= result[zz].get()
+#             
     for zz in range(0,ncpu):
         if zz < ncpu -1:
-            new_x = numpy.ceil((1.0)*cineObj.dim_x/ncpu)
-            u_in_xyf[new_x*zz:new_x*(zz+1)] = jobs[zz]()
+#             new_x = my_atomic_calc[zz].cineObj.dim_x# numpy.ceil((1.0)*dim_x/ncpu).astype(int)
+             
+            u_in_xyf[dim_1*zz:  dim_1*(zz+1)] = result[zz].get()
+             
         else:
-            new_x = cineObj.dim_x - (numpy.ceil((1.0)*cineObj.dim_x/ncpu))*(ncpu - 1)
-            u_in_xyf[- new_x:]= jobs[zz]()
-            
+#             new_x = my_atomic_calc[zz].cineObj.dim_x #dim_x - (numpy.ceil((1.0)*dim_x/ncpu))*(ncpu - 1)
+             
+            u_in_xyf[- dim_2:]= result[zz].get()
 #############################################################################
     
-    job_server.wait()
-    job_server.destroy()
+#     job_server.wait()
+#     job_server.destroy()
     
+    pool.close()
+    pool.join()     
+    import platform
+    
+    text_file = open("Recon_time_record" + platform.platform() + ".txt", "a")
+    text_file.write("%s" % str(yrecon) )
+    text_file.write("\t\t\t" )    
+    text_file.write("%s" % str(ncpu) )
+    text_file.write("\t\t\t" )
+    text_file.write("%s" % str(time.time() - t0) )
+    text_file.write("\t\t\t" )    
+    text_file.write("%s" % time.asctime() )
+    text_file.write("\n"  )    
+    text_file.close()
 #     u_in_xyf = Cine2DSolver.pseudoinverse(cineObj, mu, LMBD, gamma, nInner, nBreg)    
 #     u_in_xyf = Cine2DSolver.u
     print('u_in_xyf',u_in_xyf.shape)
@@ -1070,7 +1148,7 @@ def showfoo(save_folder_name,low,up):
     
     data_in_xy_t =  u_in_xyf#/numpy.max(numpy.abs(u_in_xyf[:]))
     data_in_xy_t[:,:,:,0] = low_pass_filter(data_in_xy_t[:,:,:,0])
-    #data_in_xy_t = scipy.fftpack.fftn(u_in_xyf,axes = (2,))
+    #data_in_xy_t = fftpack.fftn(u_in_xyf,axes = (2,))
     print('data_in_xy,shape',data_in_xy_t.shape)
     print('u_in_xyf,shape',u_in_xyf.shape)
     cmap=matplotlib.cm.gray
@@ -1088,13 +1166,13 @@ def showfoo(save_folder_name,low,up):
         if jj == 0:
             base_phase = ccc
         
-#         ccc= scipy.fftpack.fft2(ccc)
+#         ccc= fftpack.fft2(ccc)
         ddd = numpy.zeros((512,512))
 #         ddd[:,:128]=ccc[:,:128]
 #         ddd[:,-128:]=ccc[:,-128:]
 # #         ddd[-128:,:128]=ccc[-128:,:128]
 # #         ddd[-128:,-128:]=ccc[-128:,-128:]
-#         ddd = scipy.fftpack.ifft2(ddd)
+#         ddd = fftpack.ifft2(ddd)
         ddd = scipy.misc.imresize(numpy.abs(ccc),(512,512),'bicubic')
         cine2mat[:,:,jj] = ddd
 #         ddd.imag = scipy.misc.imresize(ccc.imag,(512,512))
@@ -1103,7 +1181,7 @@ def showfoo(save_folder_name,low,up):
 #         else:
 #             tmp_sum_value = numpy.sum(ddd[:])
 #             ddd = sum_value*ddd/tmp_sum_value
-        #ccc = scipy.fftpack.fftn(ccc,(512,512),axes=(0,1))
+        #ccc = fftpack.fftn(ccc,(512,512),axes=(0,1))
         matplotlib.pyplot.imshow(numpy.abs(ddd.T),cmap = cmap, interpolation = interpl, norm =norm 
                                         )
         #fname = '_tmp%03d.png'%jj
@@ -1113,7 +1191,7 @@ def showfoo(save_folder_name,low,up):
                                   transparent=True, bbox_inches='tight', 
                                   pad_inches=0)
         #matplotlib.pyplot.show()
-    scipy.io.savemat( save_folder_name+'cine_file.mat', mdict={'cine2mat':cine2mat}, oned_as={'column'})
+#    scipy.io.savemat( save_folder_name+'cine_file.mat', mdict={'cine2mat':cine2mat}, oned_as={'column'})
 def zero_padding(input_x,size):
 #     out_image = input_x
     xres,yres = numpy.shape(input_x)
@@ -1124,7 +1202,7 @@ def zero_padding(input_x,size):
           
     out_x = numpy.zeros((size,size),dtype = numpy.complex)
      
-    input_k= (scipy.fftpack.fft2((input_x)))
+    input_k= (fftpack.fft2((input_x)))
      
 #     matplotlib.pyplot.imshow((input_k.real), cmap=cmap, norm=matplotlib.colors.Normalize(vmin=0.0, vmax=200.0))
 #     matplotlib.pyplot.show()     
@@ -1137,7 +1215,7 @@ def zero_padding(input_x,size):
     out_x[0:xres/2, -yres/2:] = input_k[0:xres/2, -yres/2:] 
     out_x[-xres/2:, -yres/2:] = input_k[-xres/2:, -yres/2:]  
  
-    out_image= scipy.fftpack.ifft2(out_x)*(size*1.0/xres)*(size*1.0/yres)
+    out_image= fftpack.ifft2(out_x)*(size*1.0/xres)*(size*1.0/yres)
 #     matplotlib.pyplot.imshow(numpy.abs(out_image), cmap=cmap, norm=matplotlib.colors.Normalize(vmin=0.0, vmax=100.0))
 #     matplotlib.pyplot.show()        
 #     matplotlib.pyplot.imshow(numpy.abs(out_x), cmap=cmap)
@@ -1153,7 +1231,7 @@ def zero_padding_rfov(input_x,(size_x, size_y)):
           
     out_x = numpy.zeros((size_x,size_y),dtype = numpy.complex)
      
-    input_k= (scipy.fftpack.fft2((input_x)))
+    input_k= (fftpack.fft2((input_x)))
      
 #     matplotlib.pyplot.imshow((input_k.real), cmap=cmap, norm=matplotlib.colors.Normalize(vmin=0.0, vmax=200.0))
 #     matplotlib.pyplot.show()     
@@ -1166,7 +1244,7 @@ def zero_padding_rfov(input_x,(size_x, size_y)):
     out_x[0:xres/2, -yres/2:] = input_k[0:xres/2, -yres/2:] 
     out_x[-xres/2:, -yres/2:] = input_k[-xres/2:, -yres/2:]  
  
-    out_image= scipy.fftpack.ifft2(out_x)*(size_x*1.0/xres)*(size_y*1.0/yres)
+    out_image= fftpack.ifft2(out_x)*(size_x*1.0/xres)*(size_y*1.0/yres)
 #     matplotlib.pyplot.imshow(numpy.abs(out_image), cmap=cmap, norm=matplotlib.colors.Normalize(vmin=0.0, vmax=100.0))
 #     matplotlib.pyplot.show()        
 #     matplotlib.pyplot.imshow(numpy.abs(out_x), cmap=cmap)
@@ -1181,8 +1259,8 @@ def low_pass_phase(input_image):
             D2 = (q - img_shape[0]/2.0)**2 +(w - img_shape[1]/2.0)**2
             filter_k[q,w] = numpy.exp(-D2/(2.0*6**2))
             
-    kimg = scipy.fftpack.fftshift(scipy.fftpack.fft2(scipy.fftpack.fftshift(input_image)))
-    low_pass_img =  scipy.fftpack.fftshift(scipy.fftpack.ifft2(scipy.fftpack.fftshift(kimg*filter_k)))
+    kimg = fftpack.fftshift(fftpack.fft2(fftpack.fftshift(input_image)))
+    low_pass_img =  fftpack.fftshift(fftpack.ifft2(fftpack.fftshift(kimg*filter_k)))
 #     low_pass_img = low_pass_img/numpy.max(numpy.abs(low_pass_img))
 #     intensity_img = numpy.abs(low_pass_img)
     low_pass_phase =low_pass_img/numpy.abs(low_pass_img)
@@ -1208,7 +1286,7 @@ def showfoo_final(save_folder_name,low,up,TRANS):
     data_in_xy_t[:,:,:,0] = low_pass_filter(data_in_xy_t[:,:,:,0])
     for jj in range(0,u_in_xyf.shape[2]):
         data_in_xy_t[:,:,jj,0] = low_pass_phase(data_in_xy_t[:,:,jj,0])
-    #data_in_xy_t = scipy.fftpack.fftn(u_in_xyf,axes = (2,))
+    #data_in_xy_t = fftpack.fftn(u_in_xyf,axes = (2,))
     print('data_in_xy,shape',data_in_xy_t.shape)
     print('u_in_xyf,shape',u_in_xyf.shape)
     cmap=matplotlib.cm.gray
@@ -1236,13 +1314,13 @@ def showfoo_final(save_folder_name,low,up,TRANS):
         if jj == 0:
             base_phase = ccc
         
-#         ccc= scipy.fftpack.fft2(ccc)
+#         ccc= fftpack.fft2(ccc)
         ddd = numpy.zeros((512,512))
 #         ddd[:,:128]=ccc[:,:128]
 #         ddd[:,-128:]=ccc[:,-128:]
 # #         ddd[-128:,:128]=ccc[-128:,:128]
 # #         ddd[-128:,-128:]=ccc[-128:,-128:]
-#         ddd = scipy.fftpack.ifft2(ddd)
+#         ddd = fftpack.ifft2(ddd)
 #         ccc = abs(ccc)
 #         ddd = scipy.misc.imresize(numpy.real(ccc),(512,512),'bicubic') + 1.0j*scipy.misc.imresize(numpy.imag(ccc),(512,512),'bicubic')
 #         ddd = scipy.misc.imresize(numpy.abs(ccc),(512,512),'bicubic')# + 1.0j*scipy.misc.imresize(numpy.imag(ccc),(512,512),'bicubic')
@@ -1263,7 +1341,7 @@ def showfoo_final(save_folder_name,low,up,TRANS):
 #         else:
 #             tmp_sum_value = numpy.sum(ddd[:])
 #             ddd = sum_value*ddd/tmp_sum_value
-        #ccc = scipy.fftpack.fftn(ccc,(512,512),axes=(0,1))
+        #ccc = fftpack.fftn(ccc,(512,512),axes=(0,1))
 #         if TRANS == 1:
 #             matplotlib.pyplot.imshow( (ddd.T).real,cmap = cmap, interpolation = interpl, norm =norm 
 #                                         )
@@ -1277,7 +1355,7 @@ def showfoo_final(save_folder_name,low,up,TRANS):
                                   transparent=True, bbox_inches='tight', 
                                   pad_inches=0)
 #         matplotlib.pyplot.show()
-    scipy.io.savemat( save_folder_name+'cine_file.mat', mdict={'cine2mat':cine2mat}, oned_as={'column'})   
+#    scipy.io.savemat( save_folder_name+'cine_file.mat', mdict={'cine2mat':cine2mat}, oned_as={'column'})   
 def showfoo_rfov(save_folder_name,low,up,TRANS, yrecon):
 #     import glob
 #     print(glob.glob(save_folder_name+'*.png'))
@@ -1290,7 +1368,7 @@ def showfoo_rfov(save_folder_name,low,up,TRANS, yrecon):
     data_in_xy_t[:,:,:,0] = low_pass_filter(data_in_xy_t[:,:,:,0])
     for jj in range(0,u_in_xyf.shape[2]):
         data_in_xy_t[:,:,jj,0] = low_pass_phase(data_in_xy_t[:,:,jj,0])
-    #data_in_xy_t = scipy.fftpack.fftn(u_in_xyf,axes = (2,))
+    #data_in_xy_t = fftpack.fftn(u_in_xyf,axes = (2,))
     print('data_in_xy,shape',data_in_xy_t.shape)
     print('u_in_xyf,shape',u_in_xyf.shape)
     cmap=matplotlib.cm.gray
@@ -1324,13 +1402,13 @@ def showfoo_rfov(save_folder_name,low,up,TRANS, yrecon):
         if jj == 0:
             base_phase = ccc
         
-#         ccc= scipy.fftpack.fft2(ccc)
+#         ccc= fftpack.fft2(ccc)
         ddd = numpy.zeros((yrecon*2,512),dtype= numpy.complex64)
 #         ddd[:,:128]=ccc[:,:128]
 #         ddd[:,-128:]=ccc[:,-128:]
 # #         ddd[-128:,:128]=ccc[-128:,:128]
 # #         ddd[-128:,-128:]=ccc[-128:,-128:]
-#         ddd = scipy.fftpack.ifft2(ddd)
+#         ddd = fftpack.ifft2(ddd)
 #         ccc = abs(ccc)
 #         ddd = scipy.misc.imresize(numpy.real(ccc),(512,512),'bicubic') + 1.0j*scipy.misc.imresize(numpy.imag(ccc),(512,512),'bicubic')
 #         ddd = scipy.misc.imresize(numpy.abs(ccc),(512,512),'bicubic')# + 1.0j*scipy.misc.imresize(numpy.imag(ccc),(512,512),'bicubic')
@@ -1353,7 +1431,7 @@ def showfoo_rfov(save_folder_name,low,up,TRANS, yrecon):
 #         else:
 #             tmp_sum_value = numpy.sum(ddd[:])
 #             ddd = sum_value*ddd/tmp_sum_value
-        #ccc = scipy.fftpack.fftn(ccc,(512,512),axes=(0,1))
+        #ccc = fftpack.fftn(ccc,(512,512),axes=(0,1))
 #         if TRANS == 1:
 #             matplotlib.pyplot.imshow( (ddd.T).real,cmap = cmap, interpolation = interpl, norm =norm 
 #                                         )
@@ -1370,7 +1448,7 @@ def showfoo_rfov(save_folder_name,low,up,TRANS, yrecon):
 #     os.chdir(save_folder_name)
 #     os.system('convert  ' +save_folder_name+'*.png '+save_folder_name+'cine.gif')
 #         matplotlib.pyplot.show()
-    scipy.io.savemat( save_folder_name+'cine_file.mat', mdict={'cine2mat':cine2mat}, oned_as={'column'})
+#    scipy.io.savemat( save_folder_name+'cine_file.mat', mdict={'cine2mat':cine2mat}, oned_as={'column'})
 def do_convert(save_folder_name):
     os.system('convert  ' +save_folder_name+'*.png '+save_folder_name+'cine.gif')
 def low_pass_filter(data_in):
@@ -1389,7 +1467,7 @@ def low_pass_filter(data_in):
             D2 = (q - filter_shape[0]/2.0)**2 +(w - filter_shape[1]/2.0)**2
             k_filter[q,w] = k_filter[q,w]* numpy.exp(-D2/(2.0*8.0**2))
             
-    spatial_filter = numpy.fft.fftshift( scipy.fftpack.ifft2(numpy.fft.fftshift(k_filter)))
+    spatial_filter = numpy.fft.fftshift( fftpack.ifft2(numpy.fft.fftshift(k_filter)))
     spatial_filter = spatial_filter/numpy.max(numpy.abs(spatial_filter))
     
     spatial_filter = spatial_filter/(spatial_filter +3e-1)
@@ -1465,7 +1543,7 @@ def showfoo_1024(save_folder_name,low,up):
     data_in_xy_t =  u_in_xyf#/numpy.max(numpy.abs(u_in_xyf[:]))
     data_in_xy_t = low_pass_filter(data_in_xy_t)
     
-    #data_in_xy_t = scipy.fftpack.fftn(u_in_xyf,axes = (2,))
+    #data_in_xy_t = fftpack.fftn(u_in_xyf,axes = (2,))
     print('data_in_xy,shape',data_in_xy_t.shape)
     print('u_in_xyf,shape',u_in_xyf.shape)
     cmap=matplotlib.cm.gray
@@ -1486,13 +1564,13 @@ def showfoo_1024(save_folder_name,low,up):
         
         if jj == 0:
             base_phase = ccc
-#         ccc= scipy.fftpack.fft2(ccc)
+#         ccc= fftpack.fft2(ccc)
 #         ddd = numpy.zeros((256,1024))
 #         ddd[:,:128]=ccc[:,:128]
 #         ddd[:,-128:]=ccc[:,-128:]
 # #         ddd[-128:,:128]=ccc[-128:,:128]
 # #         ddd[-128:,-128:]=ccc[-128:,-128:]
-#         ddd = scipy.fftpack.ifft2(ddd)
+#         ddd = fftpack.ifft2(ddd)
         ddd = scipy.misc.imresize(numpy.abs(ccc),numpy.shape(cine2mat)[0:2],'bicubic')
         cine2mat[:,:,jj] = ddd
 #         ddd.imag = scipy.misc.imresize(ccc.imag,(512,512))
@@ -1501,7 +1579,7 @@ def showfoo_1024(save_folder_name,low,up):
 #         else:
 #             tmp_sum_value = numpy.sum(ddd[:])
 #             ddd = sum_value*ddd/tmp_sum_value
-        #ccc = scipy.fftpack.fftn(ccc,(512,512),axes=(0,1))
+        #ccc = fftpack.fftn(ccc,(512,512),axes=(0,1))
         matplotlib.pyplot.imshow(numpy.abs(ddd),cmap = cmap, interpolation = interpl, norm =norm 
                                         )
         #fname = '_tmp%03d.png'%jj
@@ -1549,9 +1627,26 @@ if __name__ == "__main__":
         nthread=16
         rfov_yres = 32
         import os 
+        import platform
+        text_file = open("Recon_time_record" + platform.platform() + ".txt", "a")
+
+        text_file.write("%s" % platform.platform()  )
+        text_file.write("\n"  )       
+        text_file.write("recon FOV") 
+        text_file.write("\t" )          
+        text_file.write("number of processes"  )
+        text_file.write("\t" )
+        text_file.write("processing time"  )
+        text_file.write("\n"  )
+        text_file.close()        
         for jj in xrange(0,num_of_series):
-            for nthread in (1,16,):
-                for rfov_yres in (32, 256):#xrange(32, 256*2 -32,256-32):
+            for rfov_yres in (32,   256):#, 64, 128, 256,):#xrange(32, 256*2 -32,256-32):
+                if rfov_yres == 32:
+                    end_thread = 32
+                else:
+                    end_thread = 1
+                    
+                for nthread in (  1,2, 4, 8, 16, end_thread ):#, 64, 128, 256,512)+tuple(range(1,41))  :
     #                 jj = 2  
                     folder_for_process = mydir[jj] + '/'
                     print(str(folder_for_process))
@@ -1564,7 +1659,7 @@ if __name__ == "__main__":
                         para_process_int32(folder_for_process,
                                   xres,yres,etl,echo_trains,ncoil,nthread, rfov_yres)
                         showfoo_rfov(folder_for_process+'thread_'+str(nthread)+'_rfov_'+str(rfov_yres)+'/',0,2,0,rfov_yres) 
-                    do_convert(folder_for_process+'thread_'+str(nthread)+'_rfov_'+str(rfov_yres)+'/')
+#                    do_convert(folder_for_process+'thread_'+str(nthread)+'_rfov_'+str(rfov_yres)+'/')
 
     for subject in ('./rawdata',):
     #     mydir = os.listdir(subject)

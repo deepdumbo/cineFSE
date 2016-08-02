@@ -1,9 +1,9 @@
 import numpy
-import pyfftw
+# import pyfftw
 
 import scipy
-import scipy.fftpack
-# import scipy.fftpack._fftpack
+import numpy.fft as fftpack
+# import fftpack._fftpack
 # import CsSolver
 # import CsSolver
 import sys
@@ -15,7 +15,8 @@ import matplotlib.pyplot
 
 cmap=matplotlib.cm.gray
 norm=matplotlib.colors.Normalize(vmin=0.0, vmax=1.0)
-
+from numpy import arange as xrange
+ 
 class TemporalConstraint(CsTransform.pynufft.pynufft):
     def __init__(self,om, Nd, Kd,Jd):
         CsTransform.pynufft.pynufft.__init__(self,om, Nd, Kd,Jd)
@@ -128,15 +129,15 @@ class TemporalConstraint(CsTransform.pynufft.pynufft):
         3)shift-x
         
         '''
-        m = scipy.fftpack.ifftshift(m, axes=(0,)) # because kx energy is at centre
+        m = fftpack.ifftshift(m, axes=(0,)) # because kx energy is at centre
         
         shape_m = numpy.shape(m)
 
-        m= pyfftw.interfaces.scipy_fftpack.ifftn(m, axes=(0,),threads=2, overwrite_x=True)
+        m= fftpack.ifftn(m, axes=(0,), )
 
-#         m = scipy.fftpack.ifftn(m,axes=(0,))
+#         m = fftpack.ifftn(m,axes=(0,))
           
-        m = scipy.fftpack.ifftshift(m, axes=(0,)) # because x-y-f are all shifted at center
+        m = fftpack.ifftshift(m, axes=(0,)) # because x-y-f are all shifted at center
 
         return m        
         
@@ -146,10 +147,10 @@ class TemporalConstraint(CsTransform.pynufft.pynufft):
         2)fft: along f
         3)(No shift)-t
         '''
-        m = scipy.fftpack.fftshift(m, axes=(2,))
-        m= pyfftw.interfaces.scipy_fftpack.fftn(m, axes=(2,),threads=2, overwrite_x=True)
+        m = fftpack.fftshift(m, axes=(2,))
+        m= fftpack.fftn(m, axes=(2,), )
         
-#         m = scipy.fftpack.fftn(m,axes=(2,)) 
+#         m = fftpack.fftn(m,axes=(2,)) 
 
         return m
     
@@ -161,16 +162,16 @@ class TemporalConstraint(CsTransform.pynufft.pynufft):
         2)fft: along f
         3)shift-f
         '''
-        m= pyfftw.interfaces.scipy_fftpack.ifftn(m, axes=(2,),threads=2, overwrite_x=True)
-#         m = scipy.fftpack.ifftn(m,axes=(2,)) 
+        m= fftpack.ifftn(m, axes=(2,), )
+#         m = fftpack.ifftn(m,axes=(2,)) 
         
-        m = scipy.fftpack.ifftshift(m, axes=(2,)) 
+        m = fftpack.ifftshift(m, axes=(2,)) 
      
         return m
 #     def fast_fun4_FhF_fun3(self,m, cineObj):
-#         m = scipy.fftpack.ifftn(m,axes=(2,)) 
+#         m = fftpack.ifftn(m,axes=(2,)) 
 #         
-#         m = scipy.fftpack.ifftshift(m, axes=(2,)) 
+#         m = fftpack.ifftshift(m, axes=(2,)) 
 #      
 #         if m.ndim != 4:
 #             print(' dimension is wrong! ')
@@ -200,9 +201,9 @@ class TemporalConstraint(CsTransform.pynufft.pynufft):
 #     
 #         m = numpy.transpose(m, (3,0,1,2)) 
 # 
-#         m = scipy.fftpack.fftshift(m, axes=(2,))
+#         m = fftpack.fftshift(m, axes=(2,))
 #         
-#         m = scipy.fftpack.fftn(m,axes=(2,)) 
+#         m = fftpack.fftn(m,axes=(2,)) 
 #                    
 #         return m
     def do_FhWFm(self,q,cineObj):
@@ -239,9 +240,9 @@ class TemporalConstraint(CsTransform.pynufft.pynufft):
         
         for 3D laplacian operator
         '''
-        m = scipy.fftpack.ifftshift(m, axes=(0,1,2,))
-        m= pyfftw.interfaces.scipy_fftpack.fftn(m, axes=(0,1,),threads=2, overwrite_x=True)
-#         m = scipy.fftpack.fftn(m,axes =  (0,1,))
+        m = fftpack.ifftshift(m, axes=(0,1,2,))
+        m= fftpack.fftn(m, axes=(0,1,), )
+#         m = fftpack.fftn(m,axes =  (0,1,))
         
         return m
         
@@ -254,9 +255,9 @@ class TemporalConstraint(CsTransform.pynufft.pynufft):
 
         '''
         
-#         m = scipy.fftpack.ifftn(m,axes =  (0,1,)) 
-        m= pyfftw.interfaces.scipy_fftpack.ifftn(m, axes=(0,1,),threads=2, overwrite_x=True)              
-        m = scipy.fftpack.fftshift(m, axes=(0,1,2,))    
+#         m = fftpack.ifftn(m,axes =  (0,1,)) 
+        m= fftpack.ifftn(m, axes=(0,1,), )              
+        m = fftpack.fftshift(m, axes=(0,1,2,))    
             
         return m
     
@@ -266,11 +267,11 @@ class TemporalConstraint(CsTransform.pynufft.pynufft):
         Laplacian of the input q
         
         '''
-#        lapla_Wq=scipy.fftpack.fftshift(q,axes=(2,))
-#        lapla_Wq=scipy.fftpack.fftn(lapla_Wq,axes=(0,1,))
+#        lapla_Wq=fftpack.fftshift(q,axes=(2,))
+#        lapla_Wq=fftpack.fftn(lapla_Wq,axes=(0,1,))
 #        lapla_Wq=lapla_Wq*uker
-#        lapla_Wq=scipy.fftpack.ifftn(lapla_Wq,axes=(0,1,))
-#        lapla_Wq=scipy.fftpack.ifftshift(q,axes=(2,))
+#        lapla_Wq=fftpack.ifftn(lapla_Wq,axes=(0,1,))
+#        lapla_Wq=fftpack.ifftshift(q,axes=(2,))
 
         lapla_Wq = q
         lapla_Wq = self.fun4(lapla_Wq)
@@ -346,7 +347,7 @@ class TemporalConstraint(CsTransform.pynufft.pynufft):
         uker[0,-1,0]=1.0
         uker[1,0,0]=1.0
         uker[-1,0,0]=1.0        
-        uker = scipy.fftpack.fftn(uker,axes=(0,1,2,)) # 256x256x16
+        uker = fftpack.fftn(uker,axes=(0,1,2,)) # 256x256x16
         return uker
     def create_laplacian_kernel3(self,cineObj):
 #===============================================================================
@@ -362,7 +363,7 @@ class TemporalConstraint(CsTransform.pynufft.pynufft):
 #        uker[0,0,1]=1.0
 #        uker[0,0,-1]=1.0   
 #             
-#        uker = scipy.fftpack.fftn(uker,axes=(0,1,2,)) # 256x256x16
+#        uker = fftpack.fftn(uker,axes=(0,1,2,)) # 256x256x16
         for pp in range(0,self.st['Nd'][1]):
             
             uker[:,:,pp] =uker[:,:,pp] * ( (pp -  self.st['Nd'][1]/2 )**2 ) / (self.st['Nd'][1]**2) 
@@ -388,7 +389,7 @@ class TemporalConstraint(CsTransform.pynufft.pynufft):
         uker2[0, 0, 1]=1.0
         uker2[0, 0,-1]=1.0
       
-        uker2 = scipy.fftpack.fftn(uker2,axes=(0,1,2,)) # 256x256x16
+        uker2 = fftpack.fftn(uker2,axes=(0,1,2,)) # 256x256x16
         return uker2       
 
     def create_kspace_sampling_density(self):
@@ -446,12 +447,12 @@ class TemporalConstraint(CsTransform.pynufft.pynufft):
         pdf = CsTransform.pynufft.appendmat(pdf,self.st['Nd'][1])
         pdf = numpy.transpose(pdf,(0,1,3,2))
         
-#        u0 = scipy.fftpack.fftn(u0,axes=(1,))
-#        u0 = scipy.fftpack.fftshift(u0,axes=(1,))
+#        u0 = fftpack.fftn(u0,axes=(1,))
+#        u0 = fftpack.fftshift(u0,axes=(1,))
 #        #u0[:,:,u0.shape[2]/2,:] = u0[:,:,u0.shape[2]/2,:]/pdf[:,:,u0.shape[2]/2,:]
 #        u0 = u0#/pdf
-#        u0 = scipy.fftpack.ifftshift(u0,axes=(1,))
-#        u0 = scipy.fftpack.ifftn(u0,axes=(1,))     
+#        u0 = fftpack.ifftshift(u0,axes=(1,))
+#        u0 = fftpack.ifftn(u0,axes=(1,))     
         
 #        print('cineObj.pdf.shape',cineObj.pdf.shape)
 #        for pj in range(0,4):
@@ -486,8 +487,8 @@ class TemporalConstraint(CsTransform.pynufft.pynufft):
         murf = numpy.copy(u) # initial values 
 #    #===============================================================================
         #u_stack = numpy.empty(st['Nd']+(nBreg,),dtype=numpy.complex)
-        for outer in numpy.arange(0,nBreg):
-            for inner in numpy.arange(0,nInner):
+        for outer in xrange(0,nBreg):
+            for inner in xrange(0,nInner):
                 # update u
                 print('iterating',[inner,outer])
                 #===============================================================
@@ -622,8 +623,8 @@ class TemporalConstraint(CsTransform.pynufft.pynufft):
 ##            
 ##            
 ##            constr=self.constraint(xx, bb)
-##            constr=scipy.fftpack.ifftn(constr,axes=(2,))
-##            constr =scipy.fftpack.ifftshift(constr,axes=(2,))
+##            constr=fftpack.ifftn(constr,axes=(2,))
+##            constr =fftpack.ifftshift(constr,axes=(2,))
 ##            
 #            
 #            
@@ -794,19 +795,19 @@ class TemporalConstraint(CsTransform.pynufft.pynufft):
  
         #    print('L',L)
         #    print('rms',numpy.shape(rms))
-        for ll in numpy.arange(0,L):
+        for ll in xrange(0,L):
             st['sensemap'][...,ll]=(u0[...,ll]+1e-16)/(rms+1e-16)
              
             print('sensemap shape',st['sensemap'].shape, L)
             print('rmsshape', rms.shape) 
-            st['sensemap'][...,ll] = scipy.fftpack.fftn(st['sensemap'][...,ll], 
+            st['sensemap'][...,ll] = fftpack.fftn(st['sensemap'][...,ll], 
                                               st['sensemap'][...,ll].shape,
                                                     range(0,numpy.ndim(st['sensemap'][...,ll]))) 
             st['sensemap'][...,ll] = st['sensemap'][...,ll] * dpss_fil
-            st['sensemap'][...,ll] = scipy.fftpack.ifftn(st['sensemap'][...,ll], 
+            st['sensemap'][...,ll] = fftpack.ifftn(st['sensemap'][...,ll], 
                                               st['sensemap'][...,ll].shape,
                                                     range(0,numpy.ndim(st['sensemap'][...,ll])))                             
-#             st['sensemap'][...,ll]=scipy.fftpack.ifftn(scipy.fftpack.fftn(st['sensemap'][...,ll])*dpss_fil)
+#             st['sensemap'][...,ll]=fftpack.ifftn(fftpack.fftn(st['sensemap'][...,ll])*dpss_fil)
 #         st['sensemap'] = Normalize(st['sensemap'])
         return st
 class Cine2DSolver(TemporalConstraint):
@@ -816,8 +817,8 @@ class Cine2DSolver(TemporalConstraint):
         rows=u0.shape[0]
         cols=u0.shape[1]
 
-        kk = numpy.arange(0,rows)
-        jj = numpy.arange(0,cols)
+        kk = xrange(0,rows)
+        jj = xrange(0,cols)
 
         kk = CsTransform.pynufft.appendmat(kk,cols)
         jj = CsTransform.pynufft.appendmat(jj,rows).T
@@ -826,8 +827,8 @@ class Cine2DSolver(TemporalConstraint):
         #add circular mask
         sp_rat=(rows**2+cols**2)*1.0
         
-#         for jj in numpy.arange(0,cols):
-#             for kk in numpy.arange(0,rows):
+#         for jj in xrange(0,cols):
+#             for kk in xrange(0,rows):
 #                 if ( (kk-rows/2.0)**2+(jj-cols/2.0)**2 )/sp_rat > 1.0/8.0:
 #                     st['mask'][kk,jj] = 0.0
         
@@ -887,7 +888,7 @@ class Cine2DSolver(TemporalConstraint):
         uker2[0,-1,0]=1.0/rate
         uker2[1,0,0] =1.0/rate
         uker2[-1,0,0]=1.0/rate        
-        uker2 = scipy.fftpack.fftn(uker2,axes=(0,1,2,)) # 256x256x16
+        uker2 = fftpack.fftn(uker2,axes=(0,1,2,)) # 256x256x16
         return uker2
     def constraint(self,xx,bb):
         '''
@@ -900,7 +901,7 @@ class Cine2DSolver(TemporalConstraint):
         #cons =  CsTransform.pynufft.TVconstraint(xx[0:2],bb[0:2]) * self.LMBD/100.0
         cons = cons + CsTransform.pynufft.TVconstraint(xx[2:3],bb[2:3]) * self.LMBD#/rate
         
-        cons = cons + scipy.fftpack.ifftn(xx[3]-bb[3],axes = (2,))* self.LMBD/rate
+        cons = cons + fftpack.ifftn(xx[3]-bb[3],axes = (2,))* self.LMBD/rate
 #         cons = cons + (xx[4]-bb[4])* self.gamma
 
 #         cons = cons + CsTransform.pynufft.TVconstraint(xx[4:5],bb[4:5])* self.LMBD
@@ -925,7 +926,7 @@ class Cine2DSolver(TemporalConstraint):
                               
             elif jj == 3: # rho
                 tmpu = numpy.copy(u)
-                tmpu = scipy.fftpack.fftn(tmpu,axes = (2,))
+                tmpu = fftpack.fftn(tmpu,axes = (2,))
 #                 tmpu[:,:,0,:] = tmpu[:,:,0,:]*0.0
                 out_dd = out_dd + (tmpu,)
                 
@@ -1028,12 +1029,12 @@ class Cine2DSolver(TemporalConstraint):
 #         pdf = numpy.transpose(pdf,(0,1,3,2))
 # #        matplotlib.pyplot.imshow(pdf[:,:,0,0].real)
 # #        matplotlib.pyplot.show()
-#         u0 = scipy.fftpack.fftn(u0,axes=(1,))
-#         u0 = scipy.fftpack.fftshift(u0,axes=(1,))
+#         u0 = fftpack.fftn(u0,axes=(1,))
+#         u0 = fftpack.fftshift(u0,axes=(1,))
 #         #u0[:,:,u0.shape[2]/2,:] = 2*u0[:,:,u0.shape[2]/2,:]/pdf[:,:,u0.shape[2]/2,:]
 #         u0  = u0 /pdf 
-#         u0 = scipy.fftpack.ifftshift(u0,axes=(1,))
-#         u0 = scipy.fftpack.ifftn(u0,axes=(1,))     
+#         u0 = fftpack.ifftshift(u0,axes=(1,))
+#         u0 = fftpack.ifftn(u0,axes=(1,))     
 #            
 # #        print('cineObj.pdf.shape',cineObj.pdf.shape)
 # #        for pj in range(0,4):
@@ -1053,9 +1054,9 @@ class Cine2DSolver(TemporalConstraint):
 #         print('u0.shape',u0.shape)
 #         
 #         u_bar = numpy.copy(u)
-#         u_bar = scipy.fftpack.fftshift(u_bar,axes=(2,))
+#         u_bar = fftpack.fftshift(u_bar,axes=(2,))
 #         u_bar[...,1:,:] = 0.0
-#         u_bar = scipy.fftpack.fftshift(u_bar,axes=(2,))
+#         u_bar = fftpack.fftshift(u_bar,axes=(2,))
 #         
 #         FhFu_bar = self.FhF(u_bar)#*self.st['sensemap'])*self.st['sensemap'].conj()
 #         #FhFu_bar = CombineMulti(FhFu_bar,-1)

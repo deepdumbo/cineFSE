@@ -50,7 +50,9 @@ import numpy
 import scipy.sparse
 from scipy.sparse.csgraph import _validation  # for cx_freeze debug
 # import sys
-import scipy.fftpack
+# import scipy.fftpack
+import numpy.fft as fftpack
+
 # try:
 #     import pyfftw
 # except:
@@ -91,14 +93,14 @@ import scipy.signal
 #     v,e = nitime.algorithms.spectral.dpss_windows(256,1, n_bases )
 #     for jj in xrange(0,n_bases):
 #         v[jj,:]=v[jj,:]*e[jj]
-t = numpy.arange(0, 8000)
-t = (t - 3999)/80.0
-# print('t',t)
-bpass = scipy.signal.get_window(('chebwin', 6000.0), 8001)
-bpass = bpass[1:]
-bpass = bpass/numpy.max(bpass)
-import scipy.interpolate
-dirichlet = scipy.interpolate.interp1d(t, bpass)
+# t = numpy.arange(0, 8000)
+# t = (t - 3999)/80.0
+# # print('t',t)
+# bpass = scipy.signal.get_window(('chebwin', 6000.0), 8001)
+# bpass = bpass[1:]
+# bpass = bpass/numpy.max(bpass)
+# import scipy.interpolate
+# dirichlet = scipy.interpolate.interp1d(t, bpass)
 #########################
 # def correct_phase_of_gridding(V,   Kd   ):
 #     prod_Kd= numpy.prod(Kd)
@@ -171,6 +173,14 @@ dirichlet = scipy.interpolate.interp1d(t, bpass)
 #     
 #     return V
 import scipy.linalg
+
+try: 
+    xrange # python3 compatibility
+except NameError: 
+    xrange = range # python2 
+
+# from numpy import arange as xrange
+
 def custom_schur(A):
     [Rk, Qk] = scipy.linalg.schur(A)
 
@@ -245,9 +255,9 @@ def custom_schur(A):
 
 def pipe_density(V): 
     '''
-    The original Pipe 1999 published an iterative solution.
-    Iterative implementation using Python is slow. 
-    So I used a lsqr iterative solution (written in C?) which should be faster than Python iteration. 
+    The original iterative density compensation method by J. Pipe 1999 .
+    The iterative implementation by using Python is slow. 
+    So I used a lsqr iterative solution which is faster than iterations in Python. 
     '''
     
     V1=V.getH()
@@ -256,13 +266,13 @@ def pipe_density(V):
     b = numpy.ones( (V.get_shape()[0] ,1) ,dtype  = numpy.complex64)  
     from scipy.sparse.linalg import lsqr, lsmr
         
-#     x1 =  lsqr(V, b , iter_lim=20, calc_var = True, damp = 0.001)
-    x1 =  lsmr(V, b , maxiter=10,  damp = 0.001)
+#     x1 =  lsqr(V, b , iter_lim=10, calc_var = True, damp = 0.01)
+    x1 =  lsmr(V, b , maxiter=12,  damp = 0.1)
     
     my_k_dens = x1[0]    # the first element is the answer
     
-#     tmp_W =  lsqr(V1, my_k_dens, iter_lim=20, calc_var = True, damp = 0.001)
-    tmp_W =  lsmr(V1, my_k_dens , maxiter=10,  damp = 0.001)
+#     tmp_W =  lsqr(V1, my_k_dens, iter_lim=10, calc_var = True, damp = 0.01)
+    tmp_W =  lsmr(V1, my_k_dens , maxiter=12,  damp = 0.1)
     
     W = numpy.reshape( tmp_W[0], (V.get_shape()[0] ,1),order='F' ) # reshape vector
 
@@ -272,8 +282,6 @@ def pipe_density(V):
 #         E = V.dot( V1.dot(    W   )   )
 #  
 #         W = W*(E+1.0e-17)/(E**2+1.0e-17)
- 
- 
  
     return W
 def checker(input_var,desire_size):
@@ -333,6 +341,12 @@ def checker(input_var,desire_size):
 #     return numpy.sinc(x)
 #     x = x+1e-17
 #     return -0.5j*(numpy.exp(1.0j*x) - numpy.exp(-1.0j*x))/x
+
+def dirichlet2(x):
+    return numpy.sin(numpy.pi *x+1e-20)/ (numpy.pi * x +1e-20)
+
+def dirichlet(x):
+    return numpy.sinc(x)
 
 def outer_sum(xx,yy):
     nx=numpy.size(xx)
@@ -555,6 +569,24 @@ def nufft_T(N, J, K , alpha, beta):
     
     return mat_inv(cssc) 
 
+
+def iterate_sum(rr, alf, r1):
+    rr = rr + alf * r1;
+    return rr
+
+
+def iterate_l1(L, alpha, arg, beta, K, N, rr):
+    oversample_ratio = (1.0*K/N) 
+    
+    for l1 in xrange(-L,L+1):
+        alf = alpha[abs(l1)]*1.0
+        if l1 < 0: alf = numpy.conj(alf) 
+    #             r1 = numpy.sinc(1.0*(arg+1.0*l1*beta)/(1.0*K/N))
+        input_array = ( arg+1.0*l1*beta)/oversample_ratio
+        r1 = dirichlet2( input_array.astype(numpy.float32)  )
+        rr = iterate_sum(rr, alf, r1)
+    return rr
+
 def nufft_r(om, N, J, K, alpha, beta):
     '''
     equation (30) of Fessler's paper
@@ -568,54 +600,56 @@ def nufft_r(om, N, J, K, alpha, beta):
     arg = outer_sum( -numpy.arange(1,J+1)*1.0, dk)
     L = numpy.size(alpha) - 1
 #     print('alpha',alpha)
-    rr = numpy.zeros((J,M))
+    rr = numpy.zeros((J,M), dtype=numpy.float32)
+    rr = iterate_l1(L, alpha, arg, beta, K, N, rr)
 #     if L > 0: 
 #         rr = numpy.zeros((J,M))
 #                if J > 1:
-    for l1 in xrange(-L,L+1):
-        alf = alpha[abs(l1)]*1.0
-        if l1 < 0: alf = numpy.conj(alf) 
-#             r1 = numpy.sinc(1.0*(arg+1.0*l1*beta)/(1.0*K/N))
-        r1 = dirichlet(1.0*(arg+1.0*l1*beta)/(1.0*K/N))
-        rr = 1.0*rr + alf * r1;            # [J,M]
+#     for l1 in xrange(-L,L+1):
+#         alf = alpha[abs(l1)]*1.0
+#         if l1 < 0: alf = numpy.conj(alf) 
+# #             r1 = numpy.sinc(1.0*(arg+1.0*l1*beta)/(1.0*K/N))
+#         r1 = dirichlet(1.0*(arg+1.0*l1*beta)/(1.0*K/N))
+#         rr = 1.0*rr + alf * r1;            # [J,M]
 #                elif J ==1:
 #                    rr=rr+1.0
 #     else: #L==0
 # #         rr = numpy.sinc(1.0*(arg+1.0*l1*beta)/(1.0*K/N))
 #         rr = dirichlet(1.0*(arg+1.0*l1*beta)/(1.0*K/N))
     return (rr,arg)
-def SC(om, N, J, K, alpha, beta):
-    '''
-    equation (30) of Fessler's paper
-    
-    '''
-  
-    M = numpy.size(om) # 1D size
-    gam = 2.0*numpy.pi / (K*1.0)
-    nufft_offset0 = nufft_offset(om, J, K) # om/gam -  nufft_offset , [M,1]
-    dk = 1.0*om/gam -  nufft_offset0 # om/gam -  nufft_offset , [M,1] phase shifts for M points
-    arg = outer_sum( -numpy.arange(1,J+1)*1.0, dk) # phase shifts for JxM points, [J, M]
-#     print(numpy.shape(arg))
-    L = numpy.size(alpha) - 1
-#     print('alpha',alpha)
-    rr = numpy.zeros((J,M))
-#     if L > 0: 
-#         rr = numpy.zeros((J,M))
-#                if J > 1:
-    for l1 in xrange(-L,L+1):
-        alf = alpha[abs(l1)]*1.0
-        if l1 < 0: alf = numpy.conj(alf) 
-#             r1 = numpy.sinc(1.0*(arg+1.0*l1*beta)/(1.0*K/N))
-#         r1 = dirichlet(1.0*( 1.0*l1*beta)/(1.0*K/N))
-        r1 = dirichlet(1.0*(1.0*l1*beta)/(1.0*K/N))
-        rr = 1.0*rr + alf * r1;            # [J,M]
-#                elif J ==1:
-#                    rr=rr+1.0
-#     else: #L==0
-# #         rr = numpy.sinc(1.0*(arg+1.0*l1*beta)/(1.0*K/N))
-#         rr = dirichlet(1.0*(arg+1.0*l1*beta)/(1.0*K/N))
-    SC = rr.conj().T # [M, J]
-    return (SC,arg)
+# def SC(om, N, J, K, alpha, beta):
+#     '''
+#     equation (30) of Fessler's paper
+#     
+#     '''
+#   
+#     M = numpy.size(om) # 1D size
+#     gam = 2.0*numpy.pi / (K*1.0)
+#     nufft_offset0 = nufft_offset(om, J, K) # om/gam -  nufft_offset , [M,1]
+#     dk = 1.0*om/gam -  nufft_offset0 # om/gam -  nufft_offset , [M,1] phase shifts for M points
+#     arg = outer_sum( -numpy.arange(1,J+1)*1.0, dk) # phase shifts for JxM points, [J, M]
+# #     print(numpy.shape(arg))
+#     L = numpy.size(alpha) - 1
+# #     print('alpha',alpha)
+#     rr = numpy.zeros((J,M))
+# #     if L > 0: 
+# #         rr = numpy.zeros((J,M))
+# #                if J > 1:
+#     for l1 in xrange(-L,L+1):
+#         alf = alpha[abs(l1)]*1.0
+#         if l1 < 0: alf = numpy.conj(alf) 
+# #             r1 = numpy.sinc(1.0*(arg+1.0*l1*beta)/(1.0*K/N))
+# #         r1 = dirichlet(1.0*( 1.0*l1*beta)/(1.0*K/N))
+#         r1 = dirichlet(1.0*(1.0*l1*beta)/(1.0*K/N))
+#         rr = 1.0*rr + alf * r1;            # [J,M]
+# #                elif J ==1:
+# #                    rr=rr+1.0
+# #     else: #L==0
+# # #         rr = numpy.sinc(1.0*(arg+1.0*l1*beta)/(1.0*K/N))
+# #         rr = dirichlet(1.0*(arg+1.0*l1*beta)/(1.0*K/N))
+#     SC = rr.conj().T # [M, J]
+#     return (SC,arg)
+
 def block_outer_prod(x1, x2):
     '''
     multiply interpolators of different dimensions
@@ -636,7 +670,7 @@ def block_outer_prod(x1, x2):
     
     # RMS
     return y # [J1 J2 M]
-
+ 
 def block_outer_sum(x1, x2):
     (J1,M)=x1.shape
     (J2,M)=x2.shape
@@ -649,7 +683,7 @@ def block_outer_sum(x1, x2):
     return y # [J1 J2 M]
 
 def crop_slice_ind(Nd):
-    return [slice(0, Nd[_ss]) for _ss in xrange(0,len(Nd))]
+    return [slice(0, Nd[_ss]) for _ss in range(0,len(Nd))]
 
 class nufft:
 
@@ -857,7 +891,8 @@ class nufft:
 
 #         phase_2 = numpy.meshgrid(phase_kd)  
 #         pp_kd =phase_kd[0]
-            
+        Jprod = Jd[0]
+        Kprod = Kd[0]
         for dimid in xrange(1,dd):
             Jprod = numpy.prod(Jd[:dimid+1])
             Kprod = numpy.prod(Kd[:dimid+1])
@@ -898,6 +933,9 @@ class nufft:
         self.st=st
         self.Nd = self.st['Nd'] # backup
         self.sn = self.st['sn'] # backup
+        self.prod_Nd = numpy.prod(self.st['Nd'])
+        self.prod_Kd = numpy.prod(self.st['Kd'])
+        
         self.linear_phase( n_shift  ) # calculate the linear phase thing
 #         phase = self.linear_phase(om, n_shift, M) # calculate phase of n_shift
         #numpy.exp(1.0j* numpy.sum(om*numpy.tile(n_shift,(M,1)) , 1))  # add-up all the linear phasees in all axes,
@@ -957,7 +995,7 @@ class nufft:
         self.gpu_flag=0
 #         self.initialize_gpu() 
 
-        self.pyfftw_flag =self.__initialize_pyfftw()
+        self.pyfftw_flag = 0#self.__initialize_pyfftw()
 
         self.threads=2#multiprocessing.cpu_count()
 #         return phase
@@ -980,39 +1018,39 @@ class nufft:
         try:
             import reikna.cluda as cluda
             from reikna.fft import FFT 
-#             dtype = dtype#numpy.complex64
+
             data = numpy.zeros( self.st['Kd'],dtype=dtype)
-#             data2 = numpy.empty_like(data)
-#             if self.debug > 0:
+
             print('get_platform')
             api = cluda.ocl_api()
-#             if self.debug > 0:
-            print('api=',api== cluda.ocl_api())
-            if api==cluda.cuda_api():
-                self.gpu_api = 'cuda'
-            elif api==cluda.ocl_api():
-                self.gpu_api = 'opencl'
+
+            print('api=',api== cluda.cuda_api())
+
+            self.gpu_api =  'opencl'
                 
-            self.thr = api.Thread.create(async=True)      
+            self.thr = api.Thread.create(async=True)   
+            print('line 630')   
             self.data_dev = self.thr.to_device(data)
-#             self.data_rec = self.thr.to_device(data2)
+
             axes=range(0,numpy.size(self.st['Kd']))
+            print('line 635')   
             myfft=  FFT( data, axes=axes)
+            print('line 640')   
             self.myfft = myfft.compile(self.thr,fast_math=True)
- 
+            print('line 640')   
             self.gpu_flag=1
-#             if self.debug > 0:
+
             print('create gpu fft?',self.gpu_flag)
-            print('line 642')
+            print('line 642')#             self.data_rec = self.thr.to_device(data2)
 
                 
             W= self.st['w'][...,0]
-#             if self.debug > 0:
+
             print('line 645')   
                 
             self.W = numpy.reshape(W, self.st['Kd'],order='C')
             
-#             if self.debug > 0:
+
             print('line 647')
 #             self.thr2 = api.Thread.create() 
             print('line 649')
@@ -1027,38 +1065,9 @@ class nufft:
             self.gpu_flag=0
 #             if self.debug > 0:              
             print('get error, using cpu')
-#     def __initialize_gpu2(self):
-#         try:
-# #             import reikna.cluda as cluda
-# #             from reikna.fft import FFT 
-#             from pycuda.sparse.packeted import PacketedSpMV
-#             spmv = PacketedSpMV(self.st['p'], options.is_symmetric, numpy.complex64)
-# #             dtype = dtype#numpy.complex64
-#             data = numpy.zeros( self.st['Kd'],dtype=numpy.complex64)
-# #             data2 = numpy.empty_like(data)
-#             api = cluda.ocl_api()
-#             self.thr = api.Thread.create(async=True)      
-#             self.data_dev = self.thr.to_device(data)
-# #             self.data_rec = self.thr.to_device(data2)
-#             axes=range(0,numpy.size(self.st['Kd']))
-#             myfft=  FFT( data, axes=axes)
-#             self.myfft = myfft.compile(self.thr,fast_math=True)
-#  
-#             self.gpu_flag=1
-#             print('create gpu fft?',self.gpu_flag)
-#             print('line 642')
-#             W= self.st['w'][...,0]
-#             print('line 645')
-#             self.W = numpy.reshape(W, self.st['Kd'],order='C')
-#             print('line 647')
-# #             self.thr2 = api.Thread.create() 
-#             print('line 649')
-#             self.W_dev = self.thr.to_device(self.W.astype(dtype))
-#             self.gpu_flag=1                
-#             print('line 652')
-#         except:
-#             self.gpu_flag=0              
-#             print('get error, using cpu')    
+        
+
+   
     def forward(self,x):
         '''
         foward(x): method of class pyNufft
@@ -1091,7 +1100,7 @@ class nufft:
         if numpy.ndim(x) == dd:
             Lprod = 1
         elif numpy.ndim(x) > dd: # multi-channel data
-            Lprod = numpy.size(x)/numpy.prod(Nd)
+            Lprod = numpy.size(x)/self.prod_Nd#numpy.prod(Nd)
         '''
         Now transform Nd grids to Kd grids(not be reshaped)
         '''
@@ -1191,14 +1200,14 @@ class nufft:
 
             Xk = self.emb_fftn(x, Kd,range(0,dd))
 
-            Xk = numpy.reshape(Xk, (numpy.prod(Kd),),order='F')
+            Xk = numpy.reshape(Xk, (self.prod_Kd,),order='F')
             
         else:# otherwise, collapse all excess dimensions into just one
-            xx = numpy.reshape(x, [numpy.prod(Nd), numpy.prod(dims[(dd):])],order='F')  # [*Nd *L]
+            xx = numpy.reshape(x, [self.prod_Nd, numpy.prod(dims[(dd):])],order='F')  # [*Nd *L]
             L = numpy.shape(xx)[1]
     #        print('L=',L)
     #        print('Lprod',Lprod)
-            Xk = numpy.zeros( (numpy.prod(Kd), L),dtype=dtype) # [*Kd *L]
+            Xk = numpy.empty( (self.prod_Kd, L),dtype=dtype) # [*Kd *L]
             for ll in xrange(0,L):
                 xl = numpy.reshape(xx[:,ll], Nd,order='F') # l'th signal
                 if weight_flag == 1:
@@ -1206,11 +1215,11 @@ class nufft:
                 else:
                     pass
                 Xk[:,ll] = numpy.reshape(self.emb_fftn(xl, Kd,range(0,dd)),
-                                         (numpy.prod(Kd),),order='F')
+                                         (self.prod_Kd,),order='F')
         if self.debug==0:
             pass
         else:                
-            checker(Xk,numpy.prod(Kd))        
+            checker(Xk,self.prod_Kd)        
         return Xk
     
     def Kd2Nd(self,Xk_all,weight_flag):
@@ -1223,7 +1232,7 @@ class nufft:
         if self.debug==0:
             pass
         else:
-            checker(Xk_all,numpy.prod(Kd)) # check X of correct shape
+            checker(Xk_all,self.prod_Kd) # check X of correct shape
 
         dims = numpy.shape(Xk_all)
         Lprod= numpy.prod(dims[1:]) # how many channel * slices
@@ -1234,14 +1243,14 @@ class nufft:
             Lprod = dims[1]  
             
                   
-        x=numpy.zeros(Kd+(Lprod,),dtype=dtype)  # [*Kd *L]
+        x=numpy.empty(Kd+(Lprod,),dtype=dtype)  # [*Kd *L]
 
 #         if Lprod > 1:
 
-        Xk = numpy.reshape(Xk_all, Kd+(Lprod,) , order='F')
+        Xk_all = numpy.reshape(Xk_all, Kd+(Lprod,) , order='F')
         
         for ll in xrange(0,Lprod):  # ll = 0, 1,... Lprod-1
-            x[...,ll] =  self.emb_ifftn(Xk[...,ll],Kd,range(0,dd))#.flatten(order='F'))
+            x[...,ll] =  self.emb_ifftn(Xk_all[...,ll],Kd,range(0,dd))#.flatten(order='F'))
 
         x = x[crop_slice_ind(Nd)]
 
@@ -1250,7 +1259,7 @@ class nufft:
             pass
             
         else: #weight_flag =1 scaling factors
-            snc = st['sn'].conj()
+            snc = st['sn']#.conj()
             for ll in xrange(0,Lprod):  # ll = 0, 1,... Lprod-1    
                 x[...,ll] = x[...,ll]*snc  #% scaling factors
 
@@ -1285,29 +1294,23 @@ class nufft:
         output_x[crop_slice_ind(input_x.shape)] = input_x
 #         print('GPU flag',self.gpu_flag)
 #         print('pyfftw flag',self.pyfftw_flag)
-        if self.gpu_flag == 1:
-#         try:
-#             print('using GPU')
-#             print('using GPU interface')  
-#             self.data_dev = self.ctx.to_device(output_x.astype(dtype))
-#             self.myfft(self.res_dev, self.data_dev, -1)
-#             output_x=self.res_dev.get() 
-#             self.data_dev = 
-            self.thr.to_device(output_x.astype(dtype), dest=self.data_dev)
-            output_x=self.gpufftn(self.data_dev).get()
+#         if self.gpu_flag == 1:
+#             self.thr.to_device(output_x.astype(dtype), dest=self.data_dev)
+#             output_x=self.gpufftn(self.data_dev).get()
              
 #         except:
 #         elif self.gpu_flag ==0:
-        elif self.pyfftw_flag == 1:
-            try:
-    #                 print('using pyfftw interface')
-    #                 print('threads=',self.threads)
-                output_x=pyfftw.interfaces.scipy_fftpack.fftn(output_x, output_dim, act_axes, 
-                                                              threads=self.threads,overwrite_x=True)
-            except: 
+#         elif self.pyfftw_flag == 1:
+# #             try:
+#     #                 print('using pyfftw interface')
+#     #                 print('threads=',self.threads)
+#             output_x=pyfftw.interfaces.scipy_fftpack.fftn(output_x, output_dim, act_axes, 
+#                                                               threads=self.threads,overwrite_x=True)
+# #             except: 
 #         else:
     #                 print('using OLD interface')                
-                output_x=scipy.fftpack.fftn(output_x, output_dim, act_axes)
+#                 output_x=scipy.fftpack.fftn(output_x, output_dim, act_axes,overwrite_x=True)
+        output_x=fftpack.fftn(output_x, output_dim, act_axes)
 
 
         return output_x
@@ -1330,28 +1333,49 @@ class nufft:
         output_x[crop_slice_ind(input_x.shape)] = input_x 
 #         print('GPU flag',self.gpu_flag)
 #         print('pyfftw flag',self.pyfftw_flag)
-        if self.gpu_flag == 1:
-#         try:
-#             print('using GPU')
-#             print('using GPU interface')  
-#             self.data_dev = self.ctx.to_device(output_x.astype(dtype))
-#             self.myfft(self.res_dev, self.data_dev, -1)
-#             output_x=self.res_dev.get() 
-#             self.data_dev = 
-            self.thr.to_device(output_x.astype(dtype), dest=self.data_dev)
-            output_x=self.gpuifftn(self.data_dev).get()
+#         if self.gpu_flag == 1:
+#             self.thr.to_device(output_x.astype(dtype), dest=self.data_dev)
+#             output_x=self.gpuifftn(self.data_dev).get()
              
 #         except:
-        elif self.pyfftw_flag == 1:
-            try:
-    #                 print('using pyfftw interface')
-    #                 print('threads=',self.threads)
-                output_x=pyfftw.interfaces.scipy_fftpack.ifftn(output_x, output_dim, act_axes, 
-                                                              threads=self.threads,overwrite_x=True)
-            except:
-#         else: 
+
     #                 print('using OLD interface')                
-                output_x=scipy.fftpack.ifftn(output_x, output_dim, act_axes)
+#                 output_x=scipy.fftpack.ifftn(output_x, output_dim, act_axes,overwrite_x=True)
+        output_x=fftpack.ifftn(output_x, output_dim, act_axes)
 
 
-        return output_x 
+        return output_x
+     
+def test_init():
+    import cProfile     
+    import numpy 
+    import matplotlib.pyplot
+    import copy
+     
+    cm = matplotlib.cm.gray
+    # load example image    
+ 
+    image = numpy.loadtxt('phantom_256_256.txt') 
+    image[128,128]= 1.0   
+    Nd =(256,256) # image space size
+    Kd =(512,512) # k-space size   
+    Jd =(6,6) # interpolation size
+     
+    # load k-space points
+    om = numpy.loadtxt('om.txt')
+     
+    #create object
+    n_shift=tuple(numpy.array(Nd)*0)
+#         else:
+#             n_shift=tuple(list(n_shift)+numpy.array(Nd)/2)
+            
+      
+     
+    NufftObj = nufft(om, Nd, Kd,Jd,n_shift)    
+    NufftObj.initialize_gpu()
+    
+if __name__ == '__main__':
+    import cProfile
+    test_init()
+#     cProfile.run('test_init()')
+           
