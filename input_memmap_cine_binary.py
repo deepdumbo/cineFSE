@@ -1640,13 +1640,13 @@ if __name__ == "__main__":
         text_file.write("\n"  )
         text_file.close()        
         for jj in xrange(0,num_of_series):
-            for rfov_yres in (32,   256):#, 64, 128, 256,):#xrange(32, 256*2 -32,256-32):
+            for rfov_yres in (32,  ):# 256):#, 64, 128, 256,):#xrange(32, 256*2 -32,256-32):
                 if rfov_yres == 32:
                     end_thread = 32
                 else:
                     end_thread = 1
                     
-                for nthread in (  1,2, 4, 8, 16, end_thread ):#, 64, 128, 256,512)+tuple(range(1,41))  :
+                for nthread in (  1, ):#1,2, 4, 8, 16, 32,64,128 ):#, 64, 128, 256,512)+tuple(range(1,41))  :
     #                 jj = 2  
                     folder_for_process = mydir[jj] + '/'
                     print(str(folder_for_process))

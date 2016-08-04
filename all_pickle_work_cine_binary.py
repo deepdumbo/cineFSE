@@ -874,9 +874,9 @@ class atomic_computation2:
         return self.Cine2DSolver.pseudoinverse(self.cineObj, mu, LMBD, gamma, nInner, nBreg)
 import multiprocessing        
 def wrapper_atomic_computation(my_atomic_calc, zz,  mu, LMBD, gamma, nInner, nBreg, ncpu):
-    pid= os.getpid()
-    pinned_core = zz  % multiprocessing.cpu_count()
-    os.system("taskset -p -c %d %d" % ( pinned_core , pid))
+    #pid= os.getpid()
+    #pinned_core = zz  % multiprocessing.cpu_count()
+    #os.system("taskset -p -c %d %d" % ( pinned_core , pid))
     return my_atomic_calc.run( zz, mu, LMBD, gamma, nInner, nBreg, ncpu)
      
 
@@ -1044,6 +1044,8 @@ def para_process_int32(dirname,
         my_atomic_calc.append( atomic_computation2(Cine2DSolver, tmpObj) )
         
     pool = multiprocessing.Pool(processes = ncpu)        
+    
+    u_in_xyf  = numpy.empty((xres,Nd[0],Nd[1],ncoil),dtype = numpy.complex64)
     import time
     t0 = time.time()    
     for zz in range(0,ncpu):
@@ -1053,7 +1055,7 @@ def para_process_int32(dirname,
 #                          modules = ('numpy','pynufft','scipy'),
 #                          globals = globals()))
         
-    u_in_xyf  = numpy.empty((xres,Nd[0],Nd[1],ncoil),dtype = numpy.complex64)
+
 #         if zz < ncpu -1:
 #             new_x = my_atomic_calc[zz].cineObj.dim_x#numpy.ceil((1.0)*dim_x/ncpu).astype(int)
 #             u_in_xyf[new_x*zz:new_x*(zz+1)] = result[zz].get()
@@ -1612,20 +1614,20 @@ if __name__ == "__main__":
         text_file.write("\n"  )
         text_file.close()        
         for jj in xrange(0,num_of_series):
-            for rfov_yres in (32,    256, 64, 128, 256,):#xrange(32, 256*2 -32,256-32):
-                for nthread in ( 1,2, 4, 8, 16, 32):#, 64, 128, 256,512)+tuple(range(1,41))  :
+            for rfov_yres in (32,    ):#256, 64, 128, 256,):#xrange(32, 256*2 -32,256-32):
+                for nthread in ( 4,2,1):#1,2, 4, 8, 16, 32):#, 64, 128, 256,512)+tuple(range(1,41))  :
     #                 jj = 2  
                     folder_for_process = mydir[jj] + '/'
                     print(str(folder_for_process))
-                    if os.path.isdir(folder_for_process+'thread_'+str(nthread)+'_rfov_'+str(rfov_yres)+'/') is True:
-                        print('exist ', folder_for_process+'thread_'+str(nthread)+'_rfov_'+str(rfov_yres)+'/')
-                        pass
-                     
-                    else:
-                        print('does not exist ', folder_for_process+'thread_'+str(nthread)+'_rfov_'+str(rfov_yres)+'/')
-                        para_process_int32(folder_for_process,
+#                    if os.path.isdir(folder_for_process+'thread_'+str(nthread)+'_rfov_'+str(rfov_yres)+'/') is True:
+#                        print('exist ', folder_for_process+'thread_'+str(nthread)+'_rfov_'+str(rfov_yres)+'/')
+#                        pass
+#                     
+#                    else:
+                    print('does not exist ', folder_for_process+'thread_'+str(nthread)+'_rfov_'+str(rfov_yres)+'/')
+                    para_process_int32(folder_for_process,
                                   xres,yres,etl,echo_trains,ncoil,nthread, rfov_yres)
-                        showfoo_rfov(folder_for_process+'thread_'+str(nthread)+'_rfov_'+str(rfov_yres)+'/',0,2,0,rfov_yres) 
+#                        showfoo_rfov(folder_for_process+'thread_'+str(nthread)+'_rfov_'+str(rfov_yres)+'/',0,2,0,rfov_yres) 
 #                    do_convert(folder_for_process+'thread_'+str(nthread)+'_rfov_'+str(rfov_yres)+'/')
 
     for subject in ('./rawdata',):
