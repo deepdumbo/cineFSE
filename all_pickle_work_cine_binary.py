@@ -1106,8 +1106,10 @@ def para_process_int32(dirname,
         os.rmdir(dirname+'thread_'+str(ncpu)+'_rfov_'+str(yrecon)+'/')
     except:
         print('cannot remove dir')
-        
-    os.mkdir(dirname+'thread_'+str(ncpu)+'_rfov_'+str(yrecon)+'/')
+    try:    
+    	os.mkdir(dirname+'thread_'+str(ncpu)+'_rfov_'+str(yrecon)+'/')
+    except:
+	pass
 #     except:
 #         os.mkdir(dirname+'thread_'+str(ncpu)+'_rfov_'+str(yrecon)+'/')
     
