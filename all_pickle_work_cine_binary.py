@@ -1082,7 +1082,7 @@ def para_process_int32(dirname,
     pool.join()     
     import platform
     
-    text_file = open("Recon_time_record" + platform.platform() + ".txt", "a")
+    text_file = open("Recon_time_record_all_pickle_" + platform.platform() + ".txt", "a")
     text_file.write("%s" % str(yrecon) )
     text_file.write("\t\t\t" )    
     text_file.write("%s" % str(ncpu) )
@@ -1604,17 +1604,6 @@ if __name__ == "__main__":
         rfov_yres = 32
         import os 
         import platform
-        text_file = open("Recon_time_record" + platform.platform() + ".txt", "a")
-
-        text_file.write("%s" % platform.platform()  )
-        text_file.write("\n"  )       
-        text_file.write("recon FOV") 
-        text_file.write("\t" )          
-        text_file.write("number of processes"  )
-        text_file.write("\t" )
-        text_file.write("processing time"  )
-        text_file.write("\n"  )
-        text_file.close()        
         for jj in xrange(0,num_of_series):
             for rfov_yres in (32,    ):#256, 64, 128, 256,):#xrange(32, 256*2 -32,256-32):
                 for nthread in ( 4,2,1):#1,2, 4, 8, 16, 32):#, 64, 128, 256,512)+tuple(range(1,41))  :
@@ -1626,7 +1615,7 @@ if __name__ == "__main__":
 #                        pass
 #                     
 #                    else:
-                    print('does not exist ', folder_for_process+'thread_'+str(nthread)+'_rfov_'+str(rfov_yres)+'/')
+#                    print('does not exist ', folder_for_process+'thread_'+str(nthread)+'_rfov_'+str(rfov_yres)+'/')
                     para_process_int32(folder_for_process,
                                   xres,yres,etl,echo_trains,ncoil,nthread, rfov_yres)
 #                        showfoo_rfov(folder_for_process+'thread_'+str(nthread)+'_rfov_'+str(rfov_yres)+'/',0,2,0,rfov_yres) 
