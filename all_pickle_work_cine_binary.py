@@ -1605,8 +1605,8 @@ if __name__ == "__main__":
         import os 
         import platform
         for jj in xrange(0,num_of_series):
-            for rfov_yres in (32,    ):#256, 64, 128, 256,):#xrange(32, 256*2 -32,256-32):
-                for nthread in ( 4,2,1):#1,2, 4, 8, 16, 32):#, 64, 128, 256,512)+tuple(range(1,41))  :
+            for rfov_yres in (32,   256 ): #256, 64, 128, 256,):	#xrange(32, 256*2 -32,256-32):
+                for nthread in ( 256,128, 64, 32, 16, 8, 4,2,1):	#1,2, 4, 8, 16, 32):#, 64, 128, 256,512)+tuple(range(1,41))  :
     #                 jj = 2  
                     folder_for_process = mydir[jj] + '/'
                     print(str(folder_for_process))
